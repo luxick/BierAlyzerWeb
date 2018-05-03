@@ -34,22 +34,28 @@
 
 
 <div class="container body-content">
-    @if(Context.CheckUserType(UserType.Admin)) {
-        @Html.Partial("_Menu", Context.GetUser())
+    @if (Context.CheckUserType(UserType.Admin))
+    {
+        @Html.Partial("_AdminMenu", Context.GetUser())
     }
+    @if (Context.IsSignedIn())
+    {
+        @Html.Partial("_Menu");
+    }
+
     @RenderBody()
-    <hr/>
+    <hr />
     <footer>
         <p>
             &copy; 2018 - BierAlyzer Online
             @if (!ViewContext.View.Path.ToLower().Contains("login") && !ViewContext.View.Path.ToLower().Contains("signup"))
             {
-                <br/>
+                <br />
                 <a asp-route="logout">Ausloggen</a>
             }
             @if (ViewContext.View.Path.ToLower().Contains("signup"))
             {
-                <br/>
+                <br />
                 <a asp-route="login">Zum Login</a>
             }
         </p>
