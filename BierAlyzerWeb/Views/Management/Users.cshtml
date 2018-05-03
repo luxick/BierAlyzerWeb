@@ -1,4 +1,5 @@
-﻿@model BierAlyzerWeb.Models.Management.ManageUsersModel
+﻿@using Contracts.Model
+@model BierAlyzerWeb.Models.Management.ManageUsersModel
 
 @foreach (var user in Model.Users)
 {
@@ -8,43 +9,55 @@
         borderColor = "#F00";
     }
 
-
-    <div class="card" style="margin-top: 15px; border-color: @borderColor">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-6" style="margin-top: auto; margin-bottom: auto;"><strong>@user.Username</strong> (@user.Type)</div>
-                <div class="col-6 text-right">
-                    @user.Mail
+    <div class="accordion" style="margin-top: 15px;">
+        <div class="card" style="border-color: @borderColor">
+            <div class="card-header" data-toggle="collapse" data-target="#userAccordion@(user.UserId)" aria-expanded="false" aria-controls="userAccordion@(user.UserId)">
+                <div class="row">
+                    <div class="col-10" style="margin-top: auto; margin-bottom: auto;"><strong>@user.Username</strong> (@user.Type)</div>
+                    <div class="col-10" style="margin-top: auto; margin-bottom: auto;">@user.Origin</div>
+                    <div class="col-10">
+                        @user.Mail
+                    </div>
+                    <div class="col-2 text-right"><i class="fas fa-caret-down"></i></div>
                 </div>
             </div>
-        </div>
-        <div class="card-body" style="padding: 15px 15px 15px 15px;">
-            <div class="row">
-                <div class="col-12"><strong>Uni</strong>: @user.Origin</div>
-                <div class="col-12">
-                    <strong>Registriert</strong>: @user.Created.ToString("dd.MM.yyyy - HH:mm")
+            <div id="userAccordion@(user.UserId)" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body" style="padding: 15px 15px 15px 15px;">
+                    <div class="row">
+                        <div class="col-12">
+                            <strong>Registriert</strong>: @user.Created.ToString("dd.MM.yyyy - HH:mm")
+                        </div>
+                        <div class="col-12">
+                            <strong>Zuletzt eingeloggt</strong>: @user.LastLogin.ToString("dd.MM.yyyy - HH:mm")
+                        </div>
+                        <div class="col-12">
+                            <strong>Events</strong>: @user.UserEvents.Count
+                        </div>
+                    </div>
                 </div>
-                <div class="col-12">@user.UserEvents.Count Events</div>
-            </div>
-        </div>
-        <div class="card-header">
-            <div class="row">
-                <div class="col">
-                    <a class="btn btn-sm btn-default" style="width: 100%; color: #000;" asp-action="ToggleUserEnabled" asp-route-id="@user.UserId">
-                        @if (user.Enabled)
-                        {
-                            <i class="fas fa-lock-open" style="color: green;"></i>
-                        }
-                        else
-                        {
-                            <i class="fas fa-lock" style="color: red;"></i>
-                        }
-                    </a>
-                </div>
-                <div class="col">
-                    <a class="btn btn-sm btn-default" style="color: #000; width: 100%;" asp-action="User" asp-route-id="@user.UserId">
-                        <i class="fas fa-edit"></i>
-                    </a>
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            @if (user.Type != UserType.Admin)
+                            {
+                                <a class="btn btn-sm btn-default" style="width: 100%; color: #000;" asp-action="ToggleUserEnabled" asp-route-id="@user.UserId">
+                                    @if (user.Enabled)
+                                    {
+                                        <i class="fas fa-lock-open" style="color: green;"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-lock" style="color: red;"></i>
+                                    }
+                                </a>
+                            }
+                        </div>
+                        <div class="col">
+                            <a class="btn btn-sm btn-default" style="color: #000; width: 100%;" asp-action="User" asp-route-id="@user.UserId">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

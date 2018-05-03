@@ -174,7 +174,7 @@ namespace BierAlyzerWeb.Controllers
 
             using (var context = ContextHelper.OpenContext())
             {
-                model.Users = context.User.Include(u => u.UserEvents).ToList();
+                model.Users = context.User.Include(u => u.UserEvents).OrderByDescending(x => x.Type).ThenByDescending(x => x.Enabled).ToList();
             }
 
             return View(model);
@@ -457,6 +457,8 @@ namespace BierAlyzerWeb.Controllers
                 contextUser.Enabled = !contextUser.Enabled;
                 context.SaveChanges();
             }
+
+            SharedProperties.OutdatedObjects.Add(id);
 
             return RedirectToAction("User", new {id});
         }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using BierAlyzerWeb.Helper;
-using BierAlyzerWeb.Models;
 using BierAlyzerWeb.Models.Home;
 using Contracts.Model;
 using Microsoft.AspNetCore.Mvc;

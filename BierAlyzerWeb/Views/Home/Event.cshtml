@@ -1,4 +1,5 @@
-﻿@using Contracts.Model
+﻿@using System.Globalization
+@using Contracts.Model
 @using Microsoft.AspNetCore.Html
 @model BierAlyzerWeb.Models.Home.EventModel
 
@@ -25,8 +26,21 @@
 
 </div>
 
+@section Style
+{
+    <style type="text/css">
+        .eventtable {
+            background-color: #262626;
+        }
 
-<table class="table" style="margin-top: 10px; table-layout: fixed">
+            .eventtable td, .eventtable th {
+                border: 4px solid #000;
+            }
+    </style>
+}
+
+
+<table class="table eventtable" style="margin-top: 10px; table-layout: fixed">
     <tbody>
         @for (int i = 0; i < Model.EventUsers.Count; i++)
         {
@@ -34,19 +48,19 @@
             if (i == 0)
             {
                 kingSign = new HtmlString("<i class=\"fas fa-beer\"></i> <i class=\"fas fa-chess-king\"></i> ");
+                kingSign = HtmlString.Empty;
 
             }
 
             <tr>
-                <th style="width: 50px; white-space: nowrap;" class="text-right">@(i + 1).</th>
-                <td style="width: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@(kingSign)@Model.EventUsers[i].User.Username (@Model.EventUsers[i].User.Origin)</td>
-                <td style="width: 75px; white-space: nowrap;" class="text-right">@Model.EventUsers[i].Amount.ToString("0.00") l</td>
+                <td style="width: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@(i + 1). @(kingSign)@Model.EventUsers[i].User.Username (@Model.EventUsers[i].User.Origin)</td>
+                <td style="width: 70px; white-space: nowrap;" class="text-right">@Model.EventUsers[i].Amount.ToString("F1", CultureInfo.InvariantCulture).Replace(".", ",") l</td>
             </tr>
         }
     </tbody>
 </table>
 
-<button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#leaveEventModal" style="width: 100%; margin-top: 25px; white-space: normal;">Event verlassen</button>
+<button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#leaveEventModal" style="width: 100%; margin-top: 15px; white-space: normal;">Event verlassen</button>
 
 
 <div class="modal fade" id="addEntryModal" tabindex="-1" role="dialog" aria-labelledby="addEntryModal" aria-hidden="true">

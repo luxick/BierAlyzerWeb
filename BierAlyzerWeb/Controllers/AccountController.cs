@@ -1,5 +1,6 @@
-﻿using BierAlyzerWeb.Helper;
-using BierAlyzerWeb.Models;
+﻿using System;
+using System.Linq;
+using BierAlyzerWeb.Helper;
 using BierAlyzerWeb.Models.Account;
 using Contracts.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -82,6 +83,16 @@ namespace BierAlyzerWeb.Controllers
                     }
                     else
                     {
+                        using (var context = ContextHelper.OpenContext())
+                        {
+                            var contextUser = context.User.FirstOrDefault(u => u.UserId == user.UserId);
+                            if (contextUser != null)
+                            {
+                                contextUser.LastLogin = DateTime.Now;
+                                context.SaveChanges();
+                            }
+                        }
+
                         HttpContext.Session.SetObject("User", user);
                         return RedirectToAction("Events", "Home");
                     }

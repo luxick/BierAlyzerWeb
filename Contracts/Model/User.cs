@@ -84,5 +84,33 @@ namespace Contracts.Model
         }
 
         #endregion
+
+        #region LastLogin
+
+        [NotMapped]
+        public DateTime LastLogin
+        {
+            get
+            {
+                if (DateTime.TryParse(LastLoginString, CultureInfo.InvariantCulture, DateTimeStyles.None,
+                    out var parseDateTime)) return parseDateTime;
+                return DateTime.MinValue;
+            }
+            set => LastLoginString = value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        private string _lastLoginString;
+
+        public string LastLoginString
+        {
+            get => _lastLoginString;
+            set
+            {
+                if (value != null && _lastLoginString == value) return;
+                _lastLoginString = value;
+            }
+        }
+
+        #endregion
     }
 }

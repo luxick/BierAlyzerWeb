@@ -12,9 +12,10 @@ using System;
 namespace BierAlyzerWeb.Migrations
 {
     [DbContext(typeof(BierAlyzerContext))]
-    partial class BierAlyzerContextModelSnapshot : ModelSnapshot
+    [Migration("20180503191140_AddLastLogin")]
+    partial class AddLastLogin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

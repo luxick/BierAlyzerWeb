@@ -51,7 +51,9 @@ namespace BierAlyzerWeb.Helper
         public static bool IsSignedIn(this HttpContext httpContext)
         {
             var user = httpContext.GetUser();
-            return user != null;
+            if (user != null && user.Enabled)
+                return true;
+            return false;
         }
 
         #endregion
