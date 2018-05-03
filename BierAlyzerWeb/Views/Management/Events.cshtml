@@ -1,0 +1,83 @@
+﻿@using Contracts.Model
+@model BierAlyzerWeb.Models.Management.ManageEventsModel
+
+<div class="text-center">
+    <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#createEventModal" style="margin-bottom: 5px;" title="Event erstellen">
+        <i class="fas fa-plus"></i> Erstellen
+    </button>
+</div>
+
+@foreach (var e in Model.Events)
+{
+    var borderColor = "inherited";
+
+    if (e.Type == EventType.Hidden)
+    {
+        borderColor = "#F00";
+    }
+
+    <div class="card" style="margin-top: 15px; border-color: @borderColor">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6" style="margin-top: auto; margin-bottom: auto;">@e.Name</div>
+                <div class="col-6 text-right">
+                    <a class="btn btn-sm btn-default" style="color: #000;" asp-action="Event" asp-route-id="@e.EventId">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body" style="padding: 15px 15px 15px 15px;">
+            <div class="row">
+                <div class="col-6 text-center">
+                    <strong>Start</strong><br />@e.Start.ToString("dd.MM.yyyy - HH:mm")
+                </div>
+                <div class="col-6 text-center">
+                    <strong>Ende</strong><br />@e.End.ToString("dd.MM.yyyy - HH:mm")<br /><br />
+                </div>
+                <div class="col-6"><strong>Code</strong>: @e.Code</div>
+                <div class="col-6"><strong>Trinker</strong>: @e.EventUsers.Count</div>
+
+                <div class="col-6"><strong>Status</strong>: @e.Status</div>
+                <div class="col-6"><strong>Typ</strong>: @e.Type</div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="modal fade" id="createEventModal" tabindex="-1" role="dialog" aria-labelledby="createEventModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Event erstellen</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Events">
+                <div class="modal-body">
+                    <div>
+                        <input asp-for="EventName" placeholder="Name" style="width: 100%;" />
+                        <span asp-validation-for="EventName" class="text-danger"></span>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <textarea asp-for="EventDescription" placeholder="Beschreibung" style="width: 100%;"></textarea>
+                    </div>
+                    <div>
+                        <label asp-for="EventStart" style="margin-bottom: 0;">Start</label>
+                        <input asp-for="EventStart" style="width: 100%;" />
+                        <span asp-validation-for="EventStart" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="EventEnd" style="margin-bottom: 0;">Ende</label>
+                        <input asp-for="EventEnd" style="width: 100%;" />
+                        <span asp-validation-for="EventEnd" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Erstellen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,89 @@
+﻿@model BierAlyzerWeb.Models.Home.EventsModel
+
+@{
+    ViewData["Title"] = "Events";
+}
+
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-6" style="margin-top: auto; margin-bottom: auto;">Meine Events</div>
+            <div class="col-6 text-right">
+                <a class="btn btn btn-default" style="color: #000;" title="Mein Profil" asp-action="UserProfile">
+                    <i class="fas fa-user-circle"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body" style="padding: 0 15px 15px 15px">
+        @if (Model.Events.Any())
+        {
+            foreach (var e in Model.Events)
+            {
+                <a class="btn btn-sm btn-default" style="width: 100%; margin-top: 15px; color: #000; white-space: normal;" asp-action="Event" asp-route-id="@e.EventId">@e.Name</a>
+            }
+        }
+        else
+        {
+            <div style="margin-top: 15px;">Du bist noch keinem Event beigetreten</div>
+        }
+    </div>
+</div>
+
+
+@if (Model.PublicEvents.Any())
+{
+    <div class="card" style="margin-top: 15px;">
+        <div class="card-header">
+            Öffentliche Events
+        </div>
+        <div class="card-body" style="padding: 15px 15px 0 15px;">
+            @foreach (var e in Model.PublicEvents)
+            {
+                <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#publicEventPopup@(e.EventId)" style="width: 100%; margin: 0 0 15px 0; white-space: normal;">@e.Name beitreten</button>
+            }
+        </div>
+    </div>
+}
+
+@*<div class="card" style="margin-top: 15px;">
+        <div class="card-body" style="padding: 15px 15px 15px 15px;">
+            <form asp-route="events">
+                <input asp-for="EventCode" placeholder="Eventcode" style="width: 100%;" />
+                <button class="btn btn-default" type="submit" style="width: 100%; margin-top: 10px;">Privatem Event beitreten</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top: 15px;">
+        <div class="card-body" style="padding: 15px 15px 15px 15px;">
+            <button class="btn btn-sm btn-default" style="width: 100%; white-space: normal;" disabled>Privates Event erstellen<br />(coming soon)</button>
+        </div>
+    </div>*@
+
+@foreach (var e in Model.PublicEvents)
+{
+    <div class="modal fade" id="publicEventPopup@(e.EventId)" tabindex="-1" role="dialog" aria-labelledby="publicEventPopup@(e.EventId)" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@e.Name</h5>
+                </div>
+                <div class="modal-body">
+                    @if (!string.IsNullOrWhiteSpace(e.Description))
+                    {
+                        @e.Description
+                    }
+                    else
+                    {
+                        <span>Keine Beschreibung verfügbar</span>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default" style="white-space: normal; color: #000;" asp-action="JoinPublicEvent" asp-route-id="@e.EventId">Beitreten</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}

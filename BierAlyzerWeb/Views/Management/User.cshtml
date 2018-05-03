@@ -1,0 +1,37 @@
+﻿@model BierAlyzerWeb.Models.Management.ManageUserModel
+
+<h4>@Model.User.Username</h4>
+
+<div class="card" style="margin-top: 15px;">
+    <div class="card-body" style="padding: 15px 15px 15px 15px;">
+        <div class="row">
+            <div class="col-12">
+                <strong>E-Mail</strong>: @Model.User.Mail
+            </div>
+            <div class="col-12">
+                <strong>Universität</strong>: @Model.User.Origin
+            </div>
+            <div class="col-12">
+                <strong>Registriert</strong>: @Model.User.Created
+            </div>
+            <div class="col-12">
+                <strong>Typ</strong>: @Model.User.Type
+            </div>
+            <div class="col-12">
+                <strong>Gesperrt</strong>: @(!Model.User.Enabled)
+            </div>
+            <div class="col-12">
+                <strong>Gebuchte Getränke</strong>: @Model.User.DrinkEntries.Count
+            </div>
+            <div class="col-12">
+                <strong>Events</strong>: @Model.User.UserEvents.Count
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card" style="margin-top: 15px;">
+    <div class="card-body" style="padding: 15px 15px 15px 15px;">
+        <a class="btn btn-sm btn-default" style="width: 100%; color: #000; margin-bottom: 10px;" asp-action="ToggleUserEnabled" asp-route-id="@Model.User.UserId">Sperren / Entsperren</a>
+        <a class="btn btn-sm btn-default" style="width: 100%; color: #000;" asp-action="ToggleUserAdmin" asp-route-id="@Model.User.UserId">Adminstatus toggeln</a>
+    </div>
+</div>

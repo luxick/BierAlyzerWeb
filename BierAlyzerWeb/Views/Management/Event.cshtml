@@ -1,0 +1,103 @@
+﻿@using Contracts.Model
+@model BierAlyzerWeb.Models.Management.ManageEventModel
+
+<h5>@Model.Name</h5>
+
+<div class="card">
+    <div class="card-body" style="padding: 15px;">
+        <div class="row">
+            <div class="col-6 text-center"><strong>Typ</strong>: @Model.Type</div>
+            <div class="col-6 text-center">@Model.UserCount Trinker</div>
+            <div class="col-6 text-center"><strong>Status</strong>: @Model.Status</div>
+        </div>
+
+        <button class="btn btn-sm btn-default" style="width: 100%; margin-top: 15px;" data-toggle="modal" data-target="#editEventModal">Bearbeiten</button>
+
+    </div>
+</div>
+
+<div class="card" style="margin-top: 15px">
+    <div class="card-body" style="padding: 15px;">
+        <div class="row">
+            @if (Model.Type == EventType.Public)
+            {
+                <div class="col-6">
+                    <a class="btn btn-sm btn-default" style="width: 100%; color: #000;" asp-action="SetEventType" asp-route-id="@Model.EventId#@EventType.Private">Zu Privat</a>
+                </div>
+                <div class="col-6">
+                    <a class="btn btn-sm btn-default" style="width: 100%; color: #000;" asp-action="SetEventType" asp-route-id="@Model.EventId#@EventType.Hidden">Zu Gesperrt</a>
+                </div>
+            }
+            @if (Model.Type == EventType.Private)
+            {
+                <div class="col-6">
+                    <a class="btn btn-sm btn-default" style="width: 100%; color: #000;" asp-action="SetEventType" asp-route-id="@Model.EventId#@EventType.Public">Zu Public</a>
+                </div>
+                <div class="col-6">
+                    <a class="btn btn-sm btn-default" style="width: 100%; color: #000;" asp-action="SetEventType" asp-route-id="@Model.EventId#@EventType.Hidden">Zu Gesperrt</a>
+                </div>
+            }
+            @if (Model.Type == EventType.Hidden)
+            {
+                <div class="col-6">
+                    <a class="btn btn-sm btn-default" style="width: 100%; color: #000;" asp-action="SetEventType" asp-route-id="@Model.EventId#@EventType.Public">Zu Public</a>
+                </div>
+                <div class="col-6">
+                    <a class="btn btn-sm btn-default" style="width: 100%; color: #000;" asp-action="SetEventType" asp-route-id="@Model.EventId#@EventType.Private">Zu Privat</a>
+                </div>
+            }
+        </div>
+
+        <div style="margin-top: 15px;">
+            @if (Model.Status == EventStatus.Closed)
+            {
+                <a class="btn btn-sm btn-default" style="width: 100%; color: #000;" asp-action="SetEventStatus" asp-route-id="@Model.EventId#@EventStatus.Open">Event öffnen (+24h)</a>
+            }
+            @if (Model.Status == EventStatus.Open)
+            {
+                <a class="btn btn-sm btn-default" style="width: 100%; color: #000;" asp-action="SetEventStatus" asp-route-id="@Model.EventId#@EventStatus.Closed">Event schließen</a>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="modal fade" id="editEventModal" tabindex="-1" role="dialog" aria-labelledby="editEventModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Event bearbeiten</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Event">
+                <input type="hidden" asp-for="EventId" />
+                <div class="modal-body">
+                    <div>
+                        <input asp-for="Name" placeholder="Name" style="width: 100%;" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <textarea asp-for="Description" placeholder="Beschreibung" style="width: 100%;"></textarea>
+                    </div>
+                    <div>
+                        <label asp-for="Start" style="margin-bottom: 0;">Start</label>
+                        <input asp-for="Start" style="width: 100%;" />
+                        <span asp-validation-for="Start" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="End" style="margin-bottom: 0;">Ende</label>
+                        <input asp-for="End" style="width: 100%;" />
+                        <span asp-validation-for="End" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

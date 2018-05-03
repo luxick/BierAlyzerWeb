@@ -1,0 +1,24 @@
+﻿@using Contracts.Model
+@model User
+
+@if (Model != null && Model.Type == UserType.Admin)
+{
+    <div class="row">
+        <div class="col-4">
+            <a asp-route="manageevents" class="btn btn-sm btn-default" style="width: 100%; color: #000;" title="Events verwalten">
+                <i class="fas fa-calendar-alt"></i>
+            </a>
+        </div>
+        <div class="col-4">
+            <a asp-route="managedrinks" class="btn btn-sm btn-default" style="width: 100%; color: #000;" title="Getränke verwalten">
+                <i class="fas fa-beer"></i>
+            </a>
+        </div>
+        <div class="col-4">
+            <a asp-route="manageusers" class="btn btn-sm btn-default" style="width: 100%; color: #000;" title="User verwalten">
+                <i class="fas fa-users"></i>
+            </a>
+        </div>
+    </div>
+    <hr />
+}

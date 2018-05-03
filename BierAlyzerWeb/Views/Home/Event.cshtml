@@ -1,0 +1,95 @@
+﻿@using Contracts.Model
+@using Microsoft.AspNetCore.Html
+@model BierAlyzerWeb.Models.Home.EventModel
+
+@{
+    var bookingButtonEnabled = Model.Event.Status == EventStatus.Open;
+}
+
+<div class="row">
+
+    @if (!bookingButtonEnabled)
+    {
+        <div class="col-6"><h4>@Model.Event.Name<br /><span style="font-size: .6em; font-weight: normal;">(geschlossen)</span></h4></div>
+        <div class="col-6">
+            <button class="btn btn-default" style="width: 100%;" data-toggle="modal" data-target="#addEntryModal" disabled>Buchen</button>
+        </div>
+    }
+    else
+    {
+        <div class="col-6"><h4>@Model.Event.Name</h4></div>
+        <div class="col-6">
+            <button class="btn btn-default" style="width: 100%;" data-toggle="modal" data-target="#addEntryModal">Buchen</button>
+        </div>
+    }
+
+</div>
+
+
+<table class="table" style="margin-top: 10px; table-layout: fixed">
+    <tbody>
+        @for (int i = 0; i < Model.EventUsers.Count; i++)
+        {
+            var kingSign = HtmlString.Empty;
+            if (i == 0)
+            {
+                kingSign = new HtmlString("<i class=\"fas fa-beer\"></i> <i class=\"fas fa-chess-king\"></i> ");
+
+            }
+
+            <tr>
+                <th style="width: 50px; white-space: nowrap;" class="text-right">@(i + 1).</th>
+                <td style="width: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@(kingSign)@Model.EventUsers[i].User.Username (@Model.EventUsers[i].User.Origin)</td>
+                <td style="width: 75px; white-space: nowrap;" class="text-right">@Model.EventUsers[i].Amount.ToString("0.00") l</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#leaveEventModal" style="width: 100%; margin-top: 25px; white-space: normal;">Event verlassen</button>
+
+
+<div class="modal fade" id="addEntryModal" tabindex="-1" role="dialog" aria-labelledby="addEntryModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Buchen</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top: 5px;">
+                @if (Model.Drinks.Any())
+                {
+                    foreach (var drink in Model.Drinks)
+                    {
+                        <a class="btn btn-default" style="width: 100%; margin-top: 10px; color: #000;" asp-action="BookDrink" asp-route-id="@Model.Event.EventId#@drink.DrinkId">@drink.Name (@drink.Amount l)</a>
+                    }
+                }
+                else
+                {
+                    <span>Keine Getränke gefunden</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="leaveEventModal" tabindex="-1" role="dialog" aria-labelledby="leaveEventModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.Event.Name verlassen</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top: 5px;">
+                Bist du dir sicher? Die anderen Teilnehmer werden sehr traurig sein!
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-default" style="color: #000;" asp-action="LeaveEvent" asp-route-id="@Model.Event.EventId">Event verlassen</a>
+            </div>
+        </div>
+    </div>
+</div>

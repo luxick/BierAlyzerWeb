@@ -1,0 +1,145 @@
+﻿@using System.Globalization
+@model BierAlyzerWeb.Models.Management.ManageDrinksModel
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#DrinkAmountInput").keydown(function (e) { ValidateDoubleTextBox(this, e); });
+            $("#DrinkAmountInput").keyup(function (e) { this.value = this.value.replace(".", ","); });
+            $("#DrinkPercentageInput").keydown(function (e) { ValidateDoubleTextBox(this, e) });
+            $("#DrinkPercentageInput").keyup(function (e) { this.value = this.value.replace(".", ","); });
+        });
+    </script>
+}
+
+
+<div class="text-center">
+    <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#createDrinkModal" style="margin-bottom: 5px;">
+        <i class="fas fa-plus"></i> Erstellen
+    </button>
+</div>
+
+@foreach (var drink in Model.Drinks.Where(d => d.Visible))
+{
+    <div class="card" style="margin-top: 15px;">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6" style="margin-top: auto; margin-bottom: auto;">@drink.Name (@drink.Amount.ToString("F2",CultureInfo.InvariantCulture).Replace(".", ",") l)</div>
+                <div class="col-6 text-right">
+                    <a class="btn btn-sm btn-default" style="color: #000;" asp-action="ToggleDrinkVisibility" asp-route-id="@drink.DrinkId">
+                        @if (drink.Visible)
+                        {
+                            <i class="fas fa-eye" style="color: green;"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-eye-slash" style="color: red;"></i>
+                        }
+                    </a>
+                    <a class="btn btn-sm btn-default" style="color: #000;" asp-action="Drink" asp-route-id="@drink.DrinkId">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body" style="padding: 15px 15px 15px 15px;">
+            <div class="row">
+                <div class="col-6">
+                    <strong>Alkohol</strong>: @drink.Percentage.ToString(CultureInfo.InvariantCulture).Replace(".", ",") vol%
+                </div>
+                <div class="col-6">
+                    @(drink.DrinkEntries.Count)x verwendet
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="accordion" style="margin-top: 20px;">
+    <div class="card">
+        <div class="card-header" id="headingOne" style="font-weight: normal; background-color: #ff0000; background-color: rgba(255, 0, 0, 0.4392156)">
+            <span style="text-decoration: underline;"data-toggle="collapse" data-target="#invisibleDrinks" aria-expanded="false" aria-controls="invisibleDrinks">Inaktive Getränke</span>
+        </div>
+
+        <div id="invisibleDrinks" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+                @foreach (var drink in Model.Drinks.Where(d => !d.Visible))
+                {
+                    <div class="card" style="margin-top: 15px;">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-6" style="margin-top: auto; margin-bottom: auto;">@drink.Name (@drink.Amount.ToString("F2",CultureInfo.InvariantCulture).Replace(".", ",") l)</div>
+                                <div class="col-6 text-right">
+                                    @if (drink.DrinkEntries.Count == 0)
+                                    {
+                                        <a class="btn btn-sm btn-default" style="color: #000;" asp-action="DeleteDrink" asp-route-id="@drink.DrinkId" title="Getränke löschen">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    }
+                                    <a class="btn btn-sm btn-default" style="color: #000;" asp-action="ToggleDrinkVisibility" asp-route-id="@drink.DrinkId" title="Sichtbarkeit ändern">
+                                        @if (drink.Visible)
+                                        {
+                                            <i class="fas fa-eye" style="color: green;"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-eye-slash" style="color: red;"></i>
+                                        }
+                                    </a>
+                                    <a class="btn btn-sm btn-default" style="color: #000;" asp-action="Drink" asp-route-id="@drink.DrinkId" title="Getränke bearbeiten">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body" style="padding: 15px 15px 15px 15px;">
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Alkohol</strong>: @drink.Percentage.ToString(CultureInfo.InvariantCulture).Replace(".", ",") vol%
+                                </div>
+                                <div class="col-6">
+                                    @(drink.DrinkEntries.Count)x verwendet
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="createDrinkModal" tabindex="-1" role="dialog" aria-labelledby="createDrinkModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Drink erstellen</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Drinks">
+                <div class="modal-body">
+                    <div>
+                        <input asp-for="DrinkName" placeholder="Name" style="width: 100%;" />
+                        <span asp-validation-for="DrinkName" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="DrinkAmountString" style="margin-bottom: 0;">Menge (Liter)</label>
+                        <input asp-for="DrinkAmountString" style="width: 100%;" id="DrinkAmountInput" />
+                        <span asp-validation-for="DrinkAmountString" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="DrinkPercentageString" style="margin-bottom: 0;">Alkohol (Prozent)</label>
+                        <input asp-for="DrinkPercentageString" style="width: 100%;" id="DrinkPercentageInput" />
+                        <span asp-validation-for="DrinkPercentageString" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Erstellen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
