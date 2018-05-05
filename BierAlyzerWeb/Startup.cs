@@ -48,7 +48,7 @@ namespace BierAlyzerWeb
                     "/css/bieralyzer.min.css",
                     cssSettings,
                     "/css/global/bootstrap-4.1.0.min.css",
-                    "/css/global/bootstrap-material-design.min.css",
+                    //"/css/global/bootstrap-material-design.min.css",
                     "/css/global/fontawesome-5.0.11.all.css",
                     "/css/global/site.css");
 
@@ -65,6 +65,7 @@ namespace BierAlyzerWeb
                     "/js/global/jquery-3.3.1.slim.min.js",
                     "/js/global/popper-1.14.3.min.js",
                     "/js/global/bootstrap-4.1.0.min.js",
+                    //"/js/global/bootstrap-material-design.min.js",
                     "/js/global/site.js");
 
                 // Typeahead JS
