@@ -1,19 +1,15 @@
 ﻿@using BierAlyzerWeb.Helper
 @model BierAlyzerWeb.Models.Account.SignUpModel
 
-
-@section Style
-    {
-    <link href="~/css/typeahead.css" rel="stylesheet">
+@section Style {
+    <link href="~/css/typeahead.css" rel="stylesheet"/>
 }
 
-@section Scripts
-    {
-    <script src="~/js/typeahead.js" asp-append-version="true"></script>
+@section Scripts {
     <script type="text/javascript">
         var universities = [@WebHelper.BuildTypeaheadOrigins()];
     </script>
-    <script src="~/js/typeahead-matcher.js" asp-append-version="true"></script>
+    <script src="~/js/typeahead.min.js" asp-append-version="true"></script>
 }
 
 @{

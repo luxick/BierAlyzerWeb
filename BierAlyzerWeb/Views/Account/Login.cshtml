@@ -12,15 +12,16 @@
     <div class="row" style="text-align: center">
         <div class="col-md-2"></div>
         <div class="col-12 col-sm-6 col-md-4 text-left" style="padding: 5px 15px;">
-
-            <label asp-for="Mail" style="margin-bottom: 0;">E-Mail</label>
-            <environment include="Development">
-                <input asp-for="Mail" class="form-control" style="width: 100%;" value="bier@troogs.de" />
-            </environment>
-            <environment exclude="Development">
-                <input asp-for="Mail" class="form-control" style="width: 100%;" />
-            </environment>
-            <span asp-validation-for="Mail" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Mail" style="margin-bottom: 0;" class="bmd-label-static">E-Mail</label>
+                <environment include="Development">
+                    <input asp-for="Mail" class="form-control" style="width: 100%;" value="bier@troogs.de" />
+                </environment>
+                <environment exclude="Development">
+                    <input asp-for="Mail" class="form-control" style="width: 100%;" />
+                </environment>
+                <span asp-validation-for="Mail" class="text-danger"></span>
+            </div>
         </div>
         <div class="col-12 col-sm-6 col-md-4 text-left" style="padding: 5px 15px;">
             <label asp-for="Password" style="margin-bottom: 0;">Passwort</label>

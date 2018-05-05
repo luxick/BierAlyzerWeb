@@ -1,18 +1,15 @@
 ﻿@using BierAlyzerWeb.Helper
 @model BierAlyzerWeb.Models.Home.UserProfileModel
 
-@section Style
-{
-    <link href="~/css/typeahead.css" rel="stylesheet">
+@section Style {
+    <link href="~/css/typeahead.min.css" rel="stylesheet" />
 }
 
-@section Scripts
-{
-    <script src="~/js/typeahead.js" asp-append-version="true"></script>
+@section Scripts {
     <script type="text/javascript">
         var universities = [@WebHelper.BuildTypeaheadOrigins()];
     </script>
-    <script src="~/js/typeahead-matcher.js" asp-append-version="true"></script>
+    <script src="~/js/typeahead.min.js" asp-append-version="true"></script>
 }
 
 @if (ViewData["Success"] != null && bool.TryParse(ViewData["Success"].ToString(), out bool success) && success)
