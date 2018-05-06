@@ -174,7 +174,12 @@ namespace BierAlyzerWeb.Controllers
 
             using (var context = ContextHelper.OpenContext())
             {
-                model.Users = context.User.Include(u => u.UserEvents).OrderByDescending(x => x.Type).ThenByDescending(x => x.Enabled).ToList();
+                model.Users = context.User
+                    .Include(u => u.UserEvents)
+                    .Include(u => u.DrinkEntries).ThenInclude(de => de.Drink)
+                    .OrderByDescending(x => x.Type)
+                    .ThenByDescending(x => x.Enabled)
+                    .ToList();
             }
 
             return View(model);

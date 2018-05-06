@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using BierAlyzerWeb.Helper;
 using Contracts.Model;
 
 namespace BierAlyzerWeb.Models.Management
@@ -16,7 +17,7 @@ namespace BierAlyzerWeb.Models.Management
         /// <summary>   Gets or sets the name. </summary>
         /// <value> The name. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        [Required]
+        [Required(ErrorMessage = "Ein Event braucht einen Namen")]
         public string Name { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,16 +36,17 @@ namespace BierAlyzerWeb.Models.Management
         /// <summary>   Gets or sets the Date/Time of the start. </summary>
         /// <value> The start. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        [Required]
-        [DataType(DataType.DateTime)]
+        [Required(ErrorMessage = "Ein Startzeitpunkt muss angegeben werden")]
+        [DataType(DataType.DateTime, ErrorMessage = "Das ist keine Zeitangabe")]
         public DateTime Start { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets or sets the Date/Time of the end. </summary>
         /// <value> The end. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        [Required]
-        [DataType(DataType.DateTime)]
+        [Required(ErrorMessage = "Ein Startzeitpunkt muss angegeben werden")]
+        [DataType(DataType.DateTime, ErrorMessage = "Das ist keine Zeitangabe")]
+        [DateLaterThan("Start", ErrorMessage = "Das Event muss enden, nachdem es begonnen hat.")]
         public DateTime End { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////

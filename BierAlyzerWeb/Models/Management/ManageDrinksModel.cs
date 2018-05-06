@@ -27,13 +27,13 @@ namespace BierAlyzerWeb.Models.Management
         /// <summary>   Gets or sets the name of the drink. </summary>
         /// <value> The name of the drink. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        [Required(ErrorMessage = "Das Feld darf nicht leer sein")]
+        [Required(ErrorMessage = "Ein Getränk braucht einen Namen")]
         public string DrinkName { get; set; }
 
         #region DrinkAmount
 
         [Required(ErrorMessage = "Das Feld darf nicht leer sein")]
-        [IsStringDouble]
+        [IsStringDouble(ErrorMessage = "Das ist kein zulässiger Wert")]
         public string DrinkAmountString { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ namespace BierAlyzerWeb.Models.Management
         #region DrinkPercentage
 
         [Required(ErrorMessage = "Das Feld darf nicht leer sein")]
-        [IsStringDouble]
+        [IsStringDouble(ErrorMessage = "Das ist kein zulässiger Wert")]
         public string DrinkPercentageString { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////

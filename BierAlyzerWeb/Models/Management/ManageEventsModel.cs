@@ -27,7 +27,7 @@ namespace BierAlyzerWeb.Models.Management
         /// <summary>   Gets or sets the name of the event. </summary>
         /// <value> The name of the event. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        [Required]
+        [Required(ErrorMessage = "Ein Event braucht einen Namen")]
         public string EventName { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////

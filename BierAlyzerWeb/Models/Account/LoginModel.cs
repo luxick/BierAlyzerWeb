@@ -8,14 +8,14 @@ namespace BierAlyzerWeb.Models.Account
         /// <summary>   Gets or sets the mail. </summary>
         /// <value> The mail. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        [Required]
+        [Required(ErrorMessage = "Du hast keine E-Mail Adresse angegeben")]
         public string Mail { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets or sets the password. </summary>
         /// <value> The password. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        [Required]
+        [Required(ErrorMessage = "Du hast kein Passwort angegeben")]
         public string Password { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
+using System.Linq;
 
 namespace Contracts.Model
 {
@@ -28,6 +29,28 @@ namespace Contracts.Model
         public ICollection<UserEvent> UserEvents { get; set; }
 
         public ICollection<DrinkEntry> DrinkEntries { get; set; }
+
+        #region ConsumedLiters
+
+        [NotMapped]
+        public double ConsumedLiters
+        {
+            get
+            {
+                try
+                {
+                    return DrinkEntries.Select(de => de.Drink.Amount).Sum(x => x);
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+
+                return 0d;
+            }
+        }
+
+        #endregion
 
         #region Created
 
