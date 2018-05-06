@@ -13,33 +13,33 @@
         <div class="col-md-2"></div>
         <div class="col-12 col-sm-6 col-md-4 text-left" style="padding: 5px 15px;">
             <div class="form-group">
-                <label asp-for="Mail" style="margin-bottom: 0;" class="bmd-label-static">E-Mail</label>
+                <label asp-for="Mail" class="bmd-label-static">E-Mail</label>
                 <environment include="Development">
                     <input asp-for="Mail" class="form-control" style="width: 100%;" value="bier@troogs.de" />
                 </environment>
                 <environment exclude="Development">
                     <input asp-for="Mail" class="form-control" style="width: 100%;" />
                 </environment>
-                <span asp-validation-for="Mail" class="text-danger"></span>
             </div>
         </div>
         <div class="col-12 col-sm-6 col-md-4 text-left" style="padding: 5px 15px;">
-            <label asp-for="Password" style="margin-bottom: 0;">Passwort</label>
-            <environment include="Development">
-                <input asp-for="Password" class="form-control" style="width: 100%;" type="password" value="enemenemiste" />
-            </environment>
-            <environment exclude="Development">
-                <input asp-for="Password" class="form-control" style="width: 100%;" type="password" value="" />
-            </environment>
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
+            <div class="form-group">
+                <label asp-for="Password" class="bmd-label-static">Passwort</label>
+                <environment include="Development">
+                    <input asp-for="Password" class="form-control" style="width: 100%;" type="password" value="enemenemiste" />
+                </environment>
+                <environment exclude="Development">
+                    <input asp-for="Password" class="form-control" style="width: 100%;" type="password" value="" />
+                </environment>
+                </div>
+            </div>
     </div>
     <div class="row" style="margin-top: 15px;">
-        <div class="col-sm-6 col-md-6"></div>
-        <div class="col-6 col-sm-3 col-md-2 text-center">
+        <div class="col-md-2"></div>
+        <div class="col-6 col-md-4 text-center">
             <a class="btn btn-sm btn-default" style="width: 100%; color: #000;" href="/signup">Registrieren</a>
         </div>
-        <div class="col-6 col-sm-3 col-md-2 text-center">
+        <div class="col-6 col-md-4 text-center">
             <button class="btn btn-sm btn-default" style="width: 100%;">Login</button>
         </div>
     </div>

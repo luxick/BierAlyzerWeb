@@ -4,6 +4,15 @@
     color: #FFF;
 }
 
+a {
+    color: #FFF;
+    text-decoration: underline;
+}
+
+    a:hover {
+        color: #c20000;
+    }
+
 /* Buttons */
 .btn-default {
     background-color: #ffffff;
@@ -31,10 +40,12 @@ hr {
     border: 1px solid rgba(255, 255, 255, 0.33);
 }
 
-.card-header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.33);
-    background-color: rgba(255, 255, 255, 0.15);
-}
+    .card .card-header {
+        padding: .5rem 1rem;
+        font-size: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.33) !important;
+        background-color: rgba(255, 255, 255, 0.15);
+    }
 
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */

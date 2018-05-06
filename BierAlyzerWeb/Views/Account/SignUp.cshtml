@@ -2,7 +2,7 @@
 @model BierAlyzerWeb.Models.Account.SignUpModel
 
 @section Style {
-    <link href="~/css/typeahead.css" rel="stylesheet"/>
+    <link href="~/css/typeahead.css" rel="stylesheet" />
 }
 
 @section Scripts {
@@ -27,35 +27,38 @@
     <div class="row">
         <div class="col-md-2 hidden-xs-down"></div>
         <div class="col-12 col-sm-6 col-md-4 text-left" style="padding: 5px 15px;">
-            <input asp-for="Mail" class="form-control" style="width: 100%;" placeholder="E-Mail" autocomplete="off" />
-            <span asp-validation-for="Mail" class="text-danger"></span>
+            <div class="form-group">
+                <input asp-for="Mail" class="form-control" style="width: 100%;" placeholder="E-Mail" autocomplete="off" />
+                <span asp-validation-for="Mail" class="text-danger"></span>
+            </div>
         </div>
         <div class="col-12 col-sm-6 col-md-4 text-left" style="padding: 5px 15px;">
-            <input asp-for="Name" class="form-control" style="width: 100%;" placeholder="Name" autocomplete="off" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+            <div class="form-group"><input asp-for="Name" class="form-control" style="width: 100%;" placeholder="Name" autocomplete="off"/>
+                <span asp-validation-for="Name" class="text-danger"></span></div>
         </div>
         <div class="col-md-2 hidden-xs-down"></div>
         <div class="col-md-2 hidden-xs-down"></div>
         <div class="col-12 col-sm-6 col-md-4 text-left" style="padding: 5px 15px;">
-            <input asp-for="Origin" class="form-control typeahead" style="width: 100%;" placeholder="Universität" autocomplete="off" />
-            <span asp-validation-for="Origin" class="text-danger"></span>
+            <div class="form-group"><input asp-for="Origin" class="form-control typeahead" style="width: 100%;" placeholder="Universität" autocomplete="off"/>
+                <span asp-validation-for="Origin" class="text-danger"></span></div>
         </div>
         <div class="col-12 col-sm-6 col-md-4 hidden-xs-down"></div>
         <div class="col-md-2 hidden-xs-down"></div>
         <div class="col-md-2 hidden-xs-down"></div>
         <div class="col-12 col-sm-6 col-md-4 text-left" style="padding: 5px 15px;">
-            <input asp-for="Password" class="form-control" style="width: 100%;" type="password" value="" placeholder="Passwort" />
-            <span asp-validation-for="Password" class="text-danger"></span>
+            <div class="form-group"><input asp-for="Password" class="form-control" style="width: 100%;" type="password" value="" placeholder="Passwort"/>
+                <span asp-validation-for="Password" class="text-danger"></span></div>
         </div>
         <div class="col-12 col-sm-6 col-md-4 text-left" style="padding: 5px 15px;">
-            <input asp-for="PasswordConfirmation" class="form-control" style="width: 100%;" type="password" value="" placeholder="Passwort bestätigen" />
-            <span asp-validation-for="PasswordConfirmation" class="text-danger"></span>
+            <div class="form-group"><input asp-for="PasswordConfirmation" class="form-control" style="width: 100%;" type="password" value="" placeholder="Passwort bestätigen"/>
+                <span asp-validation-for="PasswordConfirmation" class="text-danger"></span></div>
         </div>
     </div>
     <div class="row text-center" style="margin-top: 15px;">
         <div class="col-sm-3 col-md-4"></div>
         <div class="col-12 col-sm-6 col-md-4">
-            <button class="btn btn-default" style="width: 100%;">Registrieren</button>
+            <button class="btn btn-default" style="width: 100%;">Registrieren</button><br />
+            <a asp-route="login">Zum Login</a>
         </div>
     </div>
 </form>

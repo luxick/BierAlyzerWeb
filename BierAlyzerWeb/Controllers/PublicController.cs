@@ -17,5 +17,22 @@ namespace BierAlyzerWeb.Controllers
         {
             return View(new ErrorModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets the impressum. </summary>
+        ///
+        /// <remarks>   Andre Beging, 06.05.2018. </remarks>
+        ///
+        /// <returns>   An IActionResult. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public IActionResult Impressum()
+        {
+            return View();
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
     }
 }

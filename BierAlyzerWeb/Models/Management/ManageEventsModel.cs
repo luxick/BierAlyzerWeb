@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using BierAlyzerWeb.Helper;
 using Contracts.Model;
 
 namespace BierAlyzerWeb.Models.Management
@@ -39,16 +40,17 @@ namespace BierAlyzerWeb.Models.Management
         /// <summary>   Gets or sets the Date/Time of the event start. </summary>
         /// <value> The event start. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        [Required]
-        [DataType(DataType.DateTime)]
+        [Required(ErrorMessage = "Ein Startzeitpunkt muss angegeben werden.")]
+        [DataType(DataType.DateTime, ErrorMessage = "Das ist keine Zeitangabe")]
         public DateTime EventStart { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets or sets the Date/Time of the event end. </summary>
         /// <value> The event end. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        [Required]
-        [DataType(DataType.DateTime)]
+        [Required(ErrorMessage = "Ein Endzeitpunkt muss angegeben werden.")]
+        [DataType(DataType.DateTime, ErrorMessage = "Das ist keine Zeitangabe")]
+        [DateLaterThan("EventStart", ErrorMessage = "Das Event muss enden, nachdem es begonnen hat.")]
         public DateTime EventEnd { get; set; }
     }
 }

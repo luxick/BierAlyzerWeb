@@ -18,7 +18,7 @@
         Dein Profil wurde gespeichert!
         @if (ViewData["PasswortChanged"] != null && bool.TryParse(ViewData["PasswortChanged"].ToString(), out bool passwordChanged) && passwordChanged)
         {
-            <br/>
+            <br />
             <span>Dein Passwort wurde geändert!</span>
         }
     </div>
@@ -26,33 +26,40 @@
 
 <h4>Mein Profil</h4>
 <form asp-action="UserProfile">
-    <input type="hidden" asp-for="UserId"/>
+    <input type="hidden" asp-for="UserId" />
     <div>
-        <label style="margin-bottom: 0;">E-Mail</label>
-        <input class="form-control" style="width: 100%;" value="@Model.Mail" disabled/>
+        <label style="margin-bottom: 0;" class="bmd-label-static">E-Mail</label>
+        <input class="form-control" style="width: 100%;" value="@Model.Mail" disabled />
     </div>
     <div style="margin-top: 10px;">
-        <label asp-for="Username" style="margin-bottom: 0;">Name</label>
-        <input asp-for="Username" class="form-control" style="width: 100%;" autocomplete="off"/>
-        <span asp-validation-for="Username" class="text-danger"></span>
+        <div class="form-group">
+            <label asp-for="Username" style="margin-bottom: 0;" class="bmd-label-static">Name</label>
+            <input asp-for="Username" class="form-control" style="width: 100%;" autocomplete="off" />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
     </div>
     <div style="margin-top: 10px;">
-        <label asp-for="Origin" style="margin-bottom: 0;">Universität</label>
-        <input asp-for="Origin" class="form-control typeahead" style="width: 100%;" autocomplete="off"/>
-        <span asp-validation-for="Origin" class="text-danger"></span>
+        <div class="form-group">
+            <label asp-for="Origin" style="margin-bottom: 0;" class="bmd-label-static">Universität</label>
+            <input asp-for="Origin" class="form-control typeahead" style="width: 100%;" autocomplete="off" />
+            <span asp-validation-for="Origin" class="text-danger"></span>
+        </div>
     </div>
     <div style="margin-top: 10px;">
-        <label asp-for="Password" style="margin-bottom: 0;">Neues Passwort</label>
-        <input asp-for="Password" class="form-control" style="width: 100%;" type="password" value=""/>
-        <span asp-validation-for="Password" class="text-danger"></span>
+        <div class="form-group">
+            <label asp-for="Password" style="margin-bottom: 0;" class="bmd-label-static">Neues Passwort</label>
+            <input asp-for="Password" class="form-control" style="width: 100%;" type="password" value="" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
     </div>
     <div style="margin-top: 10px;">
-        <label asp-for="PasswordConfirmation" style="margin-bottom: 0;">Neues Passwort bestätigen</label>
-        <input asp-for="PasswordConfirmation" class="form-control" style="width: 100%;" type="password" value=""/>
-        <span asp-validation-for="PasswordConfirmation" class="text-danger"></span>
+        <div class="form-group">
+            <label asp-for="PasswordConfirmation" style="margin-bottom: 0;" class="bmd-label-static">Neues Passwort bestätigen</label>
+            <input asp-for="PasswordConfirmation" class="form-control" style="width: 100%;" type="password" value="" />
+            <span asp-validation-for="PasswordConfirmation" class="text-danger"></span>
+        </div>
     </div>
-    <div style="margin-top: 10px;">Wenn das Passwort nicht gesetzt wird, wird auch nichts geändert.</div>
-    <div style="margin-top: 10px;">
+    <div style="margin-top: 1.5rem;">
         <button type="submit" class="btn btn-default" style="width: 100%;"><i class="fa fa-save"></i> Speichern</button>
     </div>
 </form>

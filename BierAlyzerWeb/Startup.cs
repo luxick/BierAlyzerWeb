@@ -37,7 +37,6 @@ namespace BierAlyzerWeb
 
             #endregion
 
-
             services.AddMvc();
             services.AddWebOptimizer(pipeline =>
             {
@@ -48,8 +47,9 @@ namespace BierAlyzerWeb
                     "/css/bieralyzer.min.css",
                     cssSettings,
                     "/css/global/bootstrap-4.1.0.min.css",
-                    //"/css/global/bootstrap-material-design.min.css",
+                    "/css/global/bootstrap-material-design.min.css",
                     "/css/global/fontawesome-5.0.11.all.css",
+                    "/css/global/materialdesign-custom.css",
                     "/css/global/site.css");
 
                 // Typeahead CSS
@@ -65,7 +65,7 @@ namespace BierAlyzerWeb
                     "/js/global/jquery-3.3.1.slim.min.js",
                     "/js/global/popper-1.14.3.min.js",
                     "/js/global/bootstrap-4.1.0.min.js",
-                    //"/js/global/bootstrap-material-design.min.js",
+                    "/js/global/bootstrap-material-design.min.js",
                     "/js/global/site.js");
 
                 // Typeahead JS
@@ -141,6 +141,8 @@ namespace BierAlyzerWeb
 
                 // PublicController
                 routes.MapRoute("Error", "error", new { controller = "Public", action = "Error" });
+                routes.MapRoute("Impressum", "impressum", new { controller = "Public", action = "Impressum" });
+                routes.MapRoute("Privacy", "privacy", new { controller = "Public", action = "Privacy" });
 
                 // Default
                 routes.MapRoute("default", "{controller}/{action}", new { controller = "Home", action = "Events" });

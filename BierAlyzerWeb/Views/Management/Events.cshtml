@@ -56,21 +56,21 @@
             </div>
             <form asp-action="Events">
                 <div class="modal-body">
-                    <div>
-                        <input asp-for="EventName" placeholder="Name" style="width: 100%;" />
+                    <div class="form-group">
+                        <input asp-for="EventName" class="form-control" placeholder="Name" style="width: 100%;" />
                         <span asp-validation-for="EventName" class="text-danger"></span>
                     </div>
-                    <div style="margin-top: 10px;">
-                        <textarea asp-for="EventDescription" placeholder="Beschreibung" style="width: 100%;"></textarea>
+                    <div class="form-group" style="margin-top: 10px;">
+                        <textarea asp-for="EventDescription" class="form-control" placeholder="Beschreibung" style="width: 100%;"></textarea>
                     </div>
-                    <div>
-                        <label asp-for="EventStart" style="margin-bottom: 0;">Start</label>
-                        <input asp-for="EventStart" style="width: 100%;" />
-                        <span asp-validation-for="EventStart" class="text-danger"></span>
+                    <div class="form-group">
+                        <label asp-for="EventStart" class="bmd-label-static" style="margin-bottom: 0;">Start</label>
+                            <input asp-for="EventStart" class="form-control" style="width: 100%;"/>
+                            <span asp-validation-for="EventStart" class="text-danger"></span></d>
                     </div>
-                    <div>
-                        <label asp-for="EventEnd" style="margin-bottom: 0;">Ende</label>
-                        <input asp-for="EventEnd" style="width: 100%;" />
+                    <div class="form-group">
+                        <label asp-for="EventEnd" class="bmd-label-static" style="margin-bottom: 0;">Ende</label>
+                        <input asp-for="EventEnd" class="form-control" style="width: 100%;" />
                         <span asp-validation-for="EventEnd" class="text-danger"></span>
                     </div>
                 </div>

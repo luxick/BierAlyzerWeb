@@ -121,24 +121,24 @@
                 </button>
             </div>
             <form asp-action="Drinks">
-                <div class="modal-body">
-                    <div>
-                        <input asp-for="DrinkName" placeholder="Name" style="width: 100%;" />
+                <div class="modal-body" style="padding-bottom: 0;">
+                    <div class="form-group">
+                        <input asp-for="DrinkName" class="form-control" placeholder="Name" style="width: 100%;" />
                         <span asp-validation-for="DrinkName" class="text-danger"></span>
                     </div>
-                    <div>
-                        <label asp-for="DrinkAmountString" style="margin-bottom: 0;">Menge (Liter)</label>
-                        <input asp-for="DrinkAmountString" style="width: 100%;" id="DrinkAmountInput" />
+                    <div class="form-group">
+                        <label asp-for="DrinkAmountString" class="bmd-label-static">Menge (Liter)</label>
+                        <input asp-for="DrinkAmountString" class="form-control" style="width: 100%;" id="DrinkAmountInput" />
                         <span asp-validation-for="DrinkAmountString" class="text-danger"></span>
                     </div>
-                    <div>
-                        <label asp-for="DrinkPercentageString" style="margin-bottom: 0;">Alkohol (Prozent)</label>
-                        <input asp-for="DrinkPercentageString" style="width: 100%;" id="DrinkPercentageInput" />
+                    <div class="form-group">
+                        <label asp-for="DrinkPercentageString" class="bmd-label-static">Alkohol (Prozent)</label>
+                        <input asp-for="DrinkPercentageString" class="form-control" style="width: 100%;" id="DrinkPercentageInput" />
                         <span asp-validation-for="DrinkPercentageString" class="text-danger"></span>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Erstellen</button>
+                    <div class="form-group text-right" style="margin-top: 1rem;">
+                        <button type="submit" class="btn btn-default">Erstellen</button>
+                    </div>
                 </div>
             </form>
         </div>

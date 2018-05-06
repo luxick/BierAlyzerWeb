@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace BierAlyzerWeb.Helper
@@ -51,6 +52,7 @@ namespace BierAlyzerWeb.Helper
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
+            if(value == null) return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
             if (!double.TryParse(value.ToString(), out var _))
                 return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
 
@@ -88,5 +90,44 @@ namespace BierAlyzerWeb.Helper
         }
 
         #endregion
+    }
+
+    public class DateLaterThanAttribute : ValidationAttribute
+    {
+        public string EarlierDateProperty;
+
+        public DateLaterThanAttribute() { }
+
+        public DateLaterThanAttribute(string earlierDateProperty)
+        {
+            EarlierDateProperty = earlierDateProperty;
+        }
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            // Default error return value
+            var errorReturnValue = new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
+
+            try
+            {
+                if (value == null) return errorReturnValue;
+                if (!(value is DateTime targetDateTime)) return errorReturnValue;
+
+                var containerType = validationContext.ObjectInstance.GetType();
+                var field = containerType.GetProperty(EarlierDateProperty);
+                var extensionValue = field.GetValue(validationContext.ObjectInstance, null);
+
+                if (extensionValue == null) return errorReturnValue;
+                if (!(extensionValue is DateTime earlierDate)) return errorReturnValue;
+
+                if (targetDateTime > earlierDate)
+                    return null;
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return errorReturnValue;
+        }
     }
 }

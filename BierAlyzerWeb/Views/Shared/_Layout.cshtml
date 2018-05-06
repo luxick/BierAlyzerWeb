@@ -47,22 +47,20 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>
-                &copy; 2018 - BierAlyzer Online
-                @if (ViewContext.View.Path.ToLower().Contains("signup"))
-                {
-                    <br />
-                    <a asp-route="login">Zum Login</a>
-                }
-            </p>
+            &copy; 2018 - BierAlyzer Online
+            <br />
+            <span style="font-size: .8rem;">
+                <a asp-controller="Public" asp-action="Impressum">Impressum</a> | <a asp-controller="Public" asp-action="Privacy">Datenschutzerklärung</a>
+            </span>
+            
         </footer>
     </div>
 
     @*<script src="~/js/global/jquery-3.3.1.slim.min.js"></script>
-    <script src="~/js/global/popper-1.14.3.min.js"></script>
-    <script src="~/js/global/bootstrap-4.0.0.min.js"></script>*@
+        <script src="~/js/global/popper-1.14.3.min.js"></script>
+        <script src="~/js/global/bootstrap-4.0.0.min.js"></script>*@
     @*<script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
-    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>*@
+        <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>*@
     <script src="~/js/bieralyzer.min.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
