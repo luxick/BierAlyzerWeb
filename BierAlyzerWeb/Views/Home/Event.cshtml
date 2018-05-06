@@ -27,14 +27,14 @@
 </div>
 
 @section Style
-{
+    {
     <style type="text/css">
         .eventtable {
             background-color: #262626;
         }
 
             .eventtable td, .eventtable th {
-                border: 4px solid #000;
+                border: 4px solid #1b1b1b;
             }
     </style>
 }
@@ -49,10 +49,9 @@
             {
                 kingSign = new HtmlString("<i class=\"fas fa-beer\"></i> <i class=\"fas fa-chess-king\"></i> ");
                 kingSign = HtmlString.Empty;
-
             }
 
-            <tr>
+            <tr onclick="javscript: showUserDetails('@(Model.EventUsers[i].User.UserId.ToString("N"))');">
                 <td style="width: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@(i + 1). @(kingSign)@Model.EventUsers[i].User.Username (@Model.EventUsers[i].User.Origin)</td>
                 <td style="width: 70px; white-space: nowrap;" class="text-right">@Model.EventUsers[i].Amount.ToString("F1", CultureInfo.InvariantCulture).Replace(".", ",") l</td>
             </tr>
@@ -62,6 +61,7 @@
 
 <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#leaveEventModal" style="width: 100%; margin-top: 15px; white-space: normal;">Event verlassen</button>
 
+<!-- #region Booking Modal -->
 
 <div class="modal fade" id="addEntryModal" tabindex="-1" role="dialog" aria-labelledby="addEntryModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -89,6 +89,9 @@
     </div>
 </div>
 
+<!-- #endregion -->
+<!-- #region LeaveEvent Modal -->
+
 <div class="modal fade" id="leaveEventModal" tabindex="-1" role="dialog" aria-labelledby="leaveEventModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -107,3 +110,57 @@
         </div>
     </div>
 </div>
+
+<!-- #endregion -->
+
+<div class="modal fade" id="userDetailsModal" tabindex="-1" role="dialog" aria-labelledby="userDetailsModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userDetailsModalName"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top: 5px;">
+                <h6 id="userDetailsModalOrigin"></h6>
+                <div style="margin-top: 25px;"><strong>Event</strong>: @Model.Event.Name</div>
+                <div style="margin-top: 20px;">
+                    <div><strong>Getrunken</strong>: <span id="userDetailsModalLiter"></span> Liter</div>
+                    <div><strong>In reinem Alkohol</strong>: <span id="userDetailsModalAlcohol"></span> Gramm</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+    @foreach (var user in Model.EventUsers)
+    {
+        var userData = new
+        {
+            Name = user.User.Username,
+            Amount = user.Amount.ToString("F2", CultureInfo.InvariantCulture).Replace(".", ","),
+            Alcohol = user.AlcoholAmount.ToString("F2", CultureInfo.InvariantCulture).Replace(".", ","),
+            Origin = user.User.Origin
+        };
+
+        var userDataSerialized = Html.Raw(Json.Serialize(userData));
+
+        @Html.Raw("var userData = [];")
+        @Html.Raw(string.Format("userData{0} = {1};", user.User.UserId.ToString("N"), userDataSerialized))
+    }
+
+        function showUserDetails(id) {
+            if (!id) return;
+            var userData = eval(`userData${id}`);
+
+            $("#userDetailsModalName").text(userData.name);
+            $("#userDetailsModalOrigin").text(userData.origin);
+            $("#userDetailsModalLiter").text(userData.amount);
+            $("#userDetailsModalAlcohol").text(userData.alcohol);
+            $('#userDetailsModal').modal('show');
+        }
+    </script>
+}

@@ -1,23 +1,30 @@
 ﻿@using System.Globalization
 @using Contracts.Model
+@using Microsoft.AspNetCore.Html
 @model BierAlyzerWeb.Models.Management.ManageUsersModel
 
 @foreach (var user in Model.Users)
 {
     var borderColor = "#545454";
     var bgColor = "inherited";
+    var userNamePrefix = HtmlString.Empty;
     if (!user.Enabled)
     {
         borderColor = "#700000";
         bgColor = "#700000";
     }
+    if (user.Type == UserType.Admin)
+    {
+        userNamePrefix = new HtmlString("<i class=\"fas fa-user-shield\" style=\"color: #FF0\"></i> ");
+    }
+
 
     <div class="accordion" style="margin-top: 15px;">
         <div class="card" style="border-color: @borderColor;">
             <div class="card-header collapsed" style="background-color: @bgColor;" data-toggle="collapse" data-target="#userAccordion@(user.UserId)" aria-expanded="false" aria-controls="userAccordion@(user.UserId)">
                 <div class="row">
                     <div class="col-9" style="margin-top: auto; margin-bottom: auto;">
-                        <div><i class="fas fa-caret-down"></i> <strong>@user.Username</strong> (@user.Type)</div>
+                        <div><i class="fas fa-caret-down"></i> @userNamePrefix<strong>@user.Username</strong> (@user.Type)</div>
                         <div style="font-size: .9rem;">@user.Mail</div>
                         <div style="font-size: .9rem;">@user.Origin</div>
                     </div>

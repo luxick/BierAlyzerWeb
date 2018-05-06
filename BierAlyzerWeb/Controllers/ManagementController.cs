@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BierAlyzerWeb.Helper;
 using BierAlyzerWeb.Models.Management;
 using Contracts.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
 namespace BierAlyzerWeb.Controllers
@@ -190,12 +192,13 @@ namespace BierAlyzerWeb.Controllers
         #region User (GET)
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Handles POST requests for the Users View </summary>
+        /// <summary>   Handles GET requests for the User View </summary>
         /// <remarks>   Andre Beging, 29.04.2018. </remarks>
         /// <param name="id">   The identifier. </param>
+        /// <param name="successMessages"></param>
         /// <returns>   An IActionResult. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public new IActionResult User(Guid id)
+        public new IActionResult User(Guid id, List<string> successMessages = null)
         {
             if (!HttpContext.IsSignedIn()) return RedirectToAction("Login", "Account");
             if (!HttpContext.CheckUserType(UserType.Admin)) return RedirectToAction("Events", "Home");
@@ -213,10 +216,86 @@ namespace BierAlyzerWeb.Controllers
 
                 if (contextUser == null) return RedirectToAction("Users");
 
-                model.User = contextUser;
+                model.UserId = contextUser.UserId;
+                model.Mail = contextUser.Mail;
+                model.Type = contextUser.Type;
+                model.Name = contextUser.Username;
+                model.Origin = contextUser.Origin;
             }
 
+            successMessages = successMessages ?? new List<string>();
+            ViewData["SuccessMessages"] = successMessages;
+
             return View(model);
+        }
+
+        #endregion
+
+        #region User (POST)
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Handles POST requests for the User View </summary>
+        ///
+        /// <remarks>   Andre Beging, 06.05.2018. </remarks>
+        ///
+        /// <param name="model">    The model. </param>
+        ///
+        /// <returns>   An IActionResult. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        [HttpPost]
+        public new IActionResult User(ManageUserModel model)
+        {
+            if (!HttpContext.IsSignedIn()) return RedirectToAction("Login", "Account");
+            if (!HttpContext.CheckUserType(UserType.Admin)) return RedirectToAction("Events", "Home");
+
+            var successMessages = new List<string>();
+
+            var changePassword = ModelState.GetValidationState("Password") == ModelValidationState.Valid
+                && ModelState.GetValidationState("PasswordConfirmation") == ModelValidationState.Valid;
+
+            ModelState.Remove("Password");
+            ModelState.Remove("PasswordConfirmation");
+
+            if (ModelState.IsValid || changePassword)
+            {
+                using (var context = ContextHelper.OpenContext())
+                {
+                    var contextUser = context.User.FirstOrDefault(u => u.UserId == model.UserId);
+                    if (contextUser == null) return RedirectToAction("Users");
+
+                    if (ModelState.IsValid)
+                    {
+                        contextUser.Username = model.Name;
+                        contextUser.Origin = model.Origin;
+                        contextUser.Type = model.Type;
+
+                        successMessages.Add("Der User wurde gespeichert.");
+                    }
+
+                    if (changePassword)
+                    {
+                        var salt = AuthenticationHelper.GenerateSalt();
+                        var hash = AuthenticationHelper.CalculatePasswordHash(salt, model.Password);
+
+                        contextUser.Salt = salt;
+                        contextUser.Hash = hash;
+
+                        successMessages.Add("Das Passwort wurde geändert.");
+                    }
+
+                    contextUser.Modified = DateTime.Now;
+                    context.SaveChanges();
+                }
+
+                SharedProperties.OutdatedObjects.Add(model.UserId);
+            }
+            else
+            {
+                return View(model);
+            }
+
+
+            return RedirectToAction("User", new { id = model.UserId, successMessages });
         }
 
         #endregion
@@ -465,36 +544,7 @@ namespace BierAlyzerWeb.Controllers
 
             SharedProperties.OutdatedObjects.Add(id);
 
-            return RedirectToAction("User", new {id});
-        }
-
-        #endregion
-
-        #region ToggleUserAdmin
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Handles GET requests for the ToggleUserAdmin Action </summary>
-        /// <remarks>   Andre Beging, 29.04.2018. </remarks>
-        /// <param name="id">   The identifier. </param>
-        /// <returns>   An IActionResult. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public IActionResult ToggleUserAdmin(Guid id)
-        {
-            if (!HttpContext.IsSignedIn()) return RedirectToAction("Login", "Account");
-            if (!HttpContext.CheckUserType(UserType.Admin)) return RedirectToAction("Events", "Home");
-
-            using (var context = ContextHelper.OpenContext())
-            {
-                var contextUser = context.User.FirstOrDefault(u => u.UserId == id);
-                if (contextUser == null) return RedirectToAction("Users");
-
-                contextUser.Type = contextUser.Type == UserType.User ? UserType.Admin : UserType.User;
-
-                SharedProperties.OutdatedObjects.Add(contextUser.UserId);
-                context.SaveChanges();
-            }
-
-            return RedirectToAction("User", new {id});
+            return RedirectToAction("Users");
         }
 
         #endregion

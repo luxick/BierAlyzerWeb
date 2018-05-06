@@ -18,6 +18,7 @@ namespace BierAlyzerWeb.Controllers
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public IActionResult SignUp()
         {
+            if (HttpContext.IsSignedIn()) return RedirectToAction("Events", "Home");
             return View();
         }
 
@@ -55,6 +56,7 @@ namespace BierAlyzerWeb.Controllers
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public IActionResult Login()
         {
+            if (HttpContext.IsSignedIn()) return RedirectToAction("Events", "Home");
             return View();
         }
 
