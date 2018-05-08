@@ -75,8 +75,10 @@ namespace BierAlyzerWeb.Helper
         /// <param name="model">    The model. </param>
         /// <returns>   True if it succeeds, false if it fails. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public static bool TrySignUp(SignUpModel model)
+        public static bool TrySignUp(SignUpModel model, out User user)
         {
+            user = new User();
+
             if (string.IsNullOrWhiteSpace(model.Password)) return false;
             if (string.IsNullOrWhiteSpace(model.PasswordConfirmation)) return false;
             if (model.Password != model.PasswordConfirmation) return false;
@@ -101,7 +103,7 @@ namespace BierAlyzerWeb.Helper
                     Modified = DateTime.Now,
                     Salt = salt,
                     Hash = hash,
-                    Type = UserType.User,
+                    Type = UserType.Admin,
                     Enabled = true
                 };
 
@@ -110,6 +112,8 @@ namespace BierAlyzerWeb.Helper
 
                 // No rows affected?
                 if (result == 0) return false;
+
+                user = newUser;
 
                 // All good
                 return true;

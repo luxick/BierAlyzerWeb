@@ -36,8 +36,12 @@ namespace BierAlyzerWeb.Controllers
         public IActionResult SignUp(SignUpModel model)
         {
             if (ModelState.IsValid)
-                if (AuthenticationHelper.TrySignUp(model))
+                if (AuthenticationHelper.TrySignUp(model, out var user))
                 {
+                    // tmp direct login
+                    HttpContext.Session.SetObject("User", user);
+                    return RedirectToAction("Events", "Home");
+
                     ViewData["Success"] = true;
                     ModelState.Clear();
                 }
