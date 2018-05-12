@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace BierAlyzerWeb.Models.Management
 {
@@ -20,6 +21,7 @@ namespace BierAlyzerWeb.Models.Management
         /// <summary>   Gets or sets the name. </summary>
         /// <value> The name. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+        [Required(ErrorMessage = "Ein Getränk braucht einen Namen")]
         public string Name { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -33,5 +35,11 @@ namespace BierAlyzerWeb.Models.Management
         /// <value> The percentage. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public double Percentage { get; set; }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets or sets the number of usages. </summary>
+        /// <value> The number of usages. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public int UsageCount { get; set; }
     }
 }

@@ -80,7 +80,7 @@ namespace BierAlyzerWeb
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromHours(48);
+                options.IdleTimeout = TimeSpan.FromHours(72);
                 options.Cookie.HttpOnly = true;
             });
         }

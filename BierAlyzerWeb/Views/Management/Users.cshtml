@@ -3,6 +3,34 @@
 @using Microsoft.AspNetCore.Html
 @model BierAlyzerWeb.Models.Management.ManageUsersModel
 
+@{
+    ViewData["Title"] = "Management - Benutzer bearbeiten";
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function searchUser() {
+            var accordions = $(".accordion");
+            var searchString = $("#searchBar").val();
+
+            for(var i = 0; i <= accordions.length; i++) {
+                if(accordions[i]) {
+                    if (accordions[i].outerHTML.toLowerCase().includes(searchString.toLowerCase())) {
+                        $(accordions[i]).show();
+                    } else {
+                        $(accordions[i]).hide();
+                    }
+                }
+            }
+        }
+    </script>
+}
+
+<div class="form-group">
+    <input class="form-control" placeholder="Benutzer suchen..." id="searchBar" onkeyup="javascript: searchUser();"/>
+</div>
+
 @foreach (var user in Model.Users)
 {
     var borderColor = "#545454";

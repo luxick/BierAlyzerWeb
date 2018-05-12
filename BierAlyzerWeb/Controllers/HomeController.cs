@@ -145,7 +145,11 @@ namespace BierAlyzerWeb.Controllers
                 }
             }
 
-            model.EventUsers = eventUsers.OrderByDescending(eu => eu.Amount).ToList();
+            model.EventUsers = eventUsers
+                .OrderByDescending(eu => eu.Amount)
+                .ThenBy(eu => eu.AlcoholAmount)
+                .ThenBy(eu => eu.User.Username)
+                .ToList();
 
             return View(model);
         }

@@ -4,6 +4,10 @@
 @model BierAlyzerWeb.Models.Home.EventModel
 
 @{
+    ViewData["Title"] = Model.Event.Name;
+}
+
+@{
     var bookingButtonEnabled = Model.Event.Status == EventStatus.Open;
 }
 
@@ -11,16 +15,20 @@
 
     @if (!bookingButtonEnabled)
     {
-        <div class="col-6"><h4>@Model.Event.Name<br /><span style="font-size: .6em; font-weight: normal;">(geschlossen)</span></h4></div>
-        <div class="col-6">
-            <button class="btn btn-default" style="width: 100%;" data-toggle="modal" data-target="#addEntryModal" disabled>Buchen</button>
+        <div class="col-8"><h4>@Model.Event.Name<br /><span style="font-size: .6em; font-weight: normal;">(geschlossen)</span></h4></div>
+        <div class="col-4">
+            <button class="btn btn-lg " style="width: 100%;" data-toggle="modal" data-target="#addEntryModal" disabled>
+                <i class="fas fa-beer"></i>
+            </button>
         </div>
     }
     else
     {
-        <div class="col-6"><h4>@Model.Event.Name</h4></div>
-        <div class="col-6">
-            <button class="btn btn-default" style="width: 100%;" data-toggle="modal" data-target="#addEntryModal">Buchen</button>
+        <div class="col-8"><h4>@Model.Event.Name</h4></div>
+        <div class="col-4">
+            <button class="btn btn-lg" style="width: 100%;" data-toggle="modal" data-target="#addEntryModal">
+                <i class="fas fa-beer"></i>
+            </button>
         </div>
     }
 

@@ -30,7 +30,26 @@ namespace BierAlyzerWeb.Controllers
             return View();
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets the privacy. </summary>
+        ///
+        /// <remarks>   Andre Beging, 11.05.2018. </remarks>
+        ///
+        /// <returns>   An IActionResult. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets the about. </summary>
+        ///
+        /// <remarks>   Andre Beging, 11.05.2018. </remarks>
+        ///
+        /// <returns>   An IActionResult. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public IActionResult About()
         {
             return View();
         }

@@ -28,6 +28,7 @@ namespace BierAlyzerWeb
                     {
                         Created = DateTime.Now,
                         Modified = DateTime.Now,
+                        Enabled = true,
                         Hash = "B1B57C0699ED6120AA594127C84DB895",
                         Salt = "71BFDCDED04E94A8939E20A0DB8B174D",
                         Mail = defaultAdminMail,

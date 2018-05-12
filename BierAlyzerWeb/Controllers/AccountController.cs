@@ -39,6 +39,16 @@ namespace BierAlyzerWeb.Controllers
                 if (AuthenticationHelper.TrySignUp(model, out var user))
                 {
                     // tmp direct login
+                    using (var context = ContextHelper.OpenContext())
+                    {
+                        var contextUser = context.User.FirstOrDefault(u => u.UserId == user.UserId);
+                        if (contextUser != null)
+                        {
+                            contextUser.LastLogin = DateTime.Now;
+                            context.SaveChanges();
+                        }
+                    }
+
                     HttpContext.Session.SetObject("User", user);
                     return RedirectToAction("Events", "Home");
 

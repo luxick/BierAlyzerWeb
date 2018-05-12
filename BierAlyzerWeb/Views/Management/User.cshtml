@@ -1,6 +1,10 @@
 ﻿@using BierAlyzerWeb.Helper
 @model BierAlyzerWeb.Models.Management.ManageUserModel
 
+@{
+    ViewData["Title"] = string.Format("Management - {0} bearbeiten", Model.Name);
+}
+
 @section Style {
     <link href="~/css/typeahead.css" rel="stylesheet" />
 }

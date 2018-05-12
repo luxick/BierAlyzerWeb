@@ -1,6 +1,23 @@
 ﻿@using Contracts.Model
 @model BierAlyzerWeb.Models.Management.ManageEventsModel
 
+@{
+    ViewData["Title"] = "Management - Events bearbeiten";
+}
+
+@section Style
+{
+    <style type="text/css">
+        .col-status {
+            -ms-flex: 0 0 10px;
+            -webkit-flex: 0 0 10px;
+            -o-flex: 0 0 10px;
+            flex: 0 0 10px;
+            padding: 0;
+        }
+    </style>
+}
+
 <div class="text-center">
     <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#createEventModal" style="margin-bottom: 5px;" title="Event erstellen">
         <i class="fas fa-plus"></i> Erstellen
@@ -9,37 +26,75 @@
 
 @foreach (var e in Model.Events)
 {
-    var borderColor = "inherited";
-
-    if (e.Type == EventType.Hidden)
+    var statusColor = "red";
+    if (e.Status == EventStatus.Open)
     {
-        borderColor = "#F00";
+        statusColor = "green";
     }
 
-    <div class="card" style="margin-top: 15px; border-color: @borderColor">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-6" style="margin-top: auto; margin-bottom: auto;">@e.Name</div>
-                <div class="col-6 text-right">
-                    <a class="btn btn-sm btn-default" style="color: #000;" asp-action="Event" asp-route-id="@e.EventId">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="card-body" style="padding: 15px 15px 15px 15px;">
-            <div class="row">
-                <div class="col-6 text-center">
-                    <strong>Start</strong><br />@e.Start.ToString("dd.MM.yyyy - HH:mm")
-                </div>
-                <div class="col-6 text-center">
-                    <strong>Ende</strong><br />@e.End.ToString("dd.MM.yyyy - HH:mm")<br /><br />
-                </div>
-                <div class="col-6"><strong>Code</strong>: @e.Code</div>
-                <div class="col-6"><strong>Trinker</strong>: @e.EventUsers.Count</div>
+    var typeColor = "red";
+    if (e.Type == EventType.Public)
+    {
+        typeColor = "green";
+    }
 
-                <div class="col-6"><strong>Status</strong>: @e.Status</div>
-                <div class="col-6"><strong>Typ</strong>: @e.Type</div>
+    <div class="accordion" style="margin-top: 15px;">
+        <div class="card">
+            <div class="card-header collapsed" data-toggle="collapse" data-target="#eventAccordion@(e.EventId)" aria-expanded="false" aria-controls="eventAccordion@(e.EventId)">
+                <div class="row" style="padding: 0 10px;">
+                    <div class="col col-status" style="background-color: @typeColor;"></div>
+                    <div class="col col-status" style="background-color: @statusColor;"></div>
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-9">
+                                <div><i class="fas fa-caret-down"></i> @e.Name</div>
+                                <div style="font-size: .9rem;">@e.EventUsers.Count Trinker</div>
+                            </div>
+                            <div class="col-3 text-right" style="padding-right: 0;">
+                                @if (e.Type == EventType.Public)
+                                {
+                                    <a class="btn btn-sm btn-default" asp-action="SetEventType" asp-route-id="@e.EventId#@EventType.Private">
+                                        <i class="fas fa-eye" style="color: green;"></i>
+                                    </a>
+                                }
+                                else if (e.Type == EventType.Private)
+                                {
+                                    <a class="btn btn-sm btn-default" asp-action="SetEventType" asp-route-id="@e.EventId#@EventType.Public">
+                                        <i class="fas fa-eye" style="color: red;"></i>
+                                    </a>
+                                }
+                                <a class="btn btn-sm btn-default" style="color: #000;" asp-action="Event" asp-route-id="@e.EventId">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div id="eventAccordion@(e.EventId)" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body" style="padding: 15px 15px 15px 15px;">
+                    <div class="row">
+                        <div class="col-12">
+                            <strong>Start</strong>: @e.Start.ToString("dd.MM.yyyy - HH:mm")
+                        </div>
+                        <div class="col-12">
+                            <strong>Ende</strong>: @e.End.ToString("dd.MM.yyyy - HH:mm")
+                        </div>
+                        <div class="col-12">
+                            <strong>Code</strong>: @e.Code
+                        </div>
+                        <div class="col-12">
+                            <strong>Status</strong>: @e.Status
+                        </div>
+                        <div class="col-12">
+                            <strong>Typ</strong>: @e.Type
+                        </div>
+                        <div class="col-12">
+                            <strong>Erstellt von</strong>: @e.Owner.Username
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -65,8 +120,8 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="EventStart" class="bmd-label-static" style="margin-bottom: 0;">Start</label>
-                            <input asp-for="EventStart" class="form-control" style="width: 100%;"/>
-                            <span asp-validation-for="EventStart" class="text-danger"></span></d>
+                        <input asp-for="EventStart" class="form-control" style="width: 100%;" />
+                        <span asp-validation-for="EventStart" class="text-danger"></span></d>
                     </div>
                     <div class="form-group">
                         <label asp-for="EventEnd" class="bmd-label-static" style="margin-bottom: 0;">Ende</label>

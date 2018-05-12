@@ -103,7 +103,7 @@ namespace BierAlyzerWeb.Helper
                     Modified = DateTime.Now,
                     Salt = salt,
                     Hash = hash,
-                    Type = UserType.Admin,
+                    Type = UserType.User,
                     Enabled = true
                 };
 
@@ -138,7 +138,7 @@ namespace BierAlyzerWeb.Helper
 
             using (var context = ContextHelper.OpenContext())
             {
-                var contextUser = context.User.FirstOrDefault(u => u.Mail.ToLower() == mail.ToLower());
+                var contextUser = context.User.FirstOrDefault(u => u.Mail.ToLower().Trim() == mail.ToLower().Trim());
                 if (contextUser == null) return false;
 
                 var salt = contextUser.Salt;

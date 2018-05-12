@@ -30,6 +30,8 @@ namespace Contracts.Model
 
         public ICollection<DrinkEntry> DrinkEntries { get; set; }
 
+        public ICollection<Event> OwnedEvents { get; set; }
+
         #region ConsumedLiters
 
         [NotMapped]

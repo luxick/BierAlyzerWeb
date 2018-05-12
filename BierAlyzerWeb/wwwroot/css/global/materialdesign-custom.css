@@ -14,6 +14,10 @@ input.form-control {
     background-color: #999999;
 }
 
+.btn.disabled, .btn:disabled {
+    background-color: #FFF !important;
+}
+
 .bmd-label-static {
     color: #FFF;
     margin-bottom: 0;
@@ -35,3 +39,7 @@ input.form-control {
     .form-group .text-danger.field-validation-error {
         font-size: .75rem;
     }
+
+.btn {
+    background-color: #FFF;
+}

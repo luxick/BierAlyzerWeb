@@ -1,5 +1,9 @@
 ﻿@model BierAlyzerWeb.Models.Account.LoginModel
 
+@{
+    ViewData["Title"] = "Login";
+}
+
 @if (ViewData["ErrorStatus"] != null && bool.TryParse(ViewData["ErrorStatus"].ToString(), out bool error) && error)
 {
     <div class="alert alert-danger" role="alert">
@@ -31,8 +35,8 @@
                 <environment exclude="Development">
                     <input asp-for="Password" class="form-control" style="width: 100%;" type="password" value="" />
                 </environment>
-                </div>
             </div>
+        </div>
     </div>
     <div class="row" style="margin-top: 15px;">
         <div class="col-md-2"></div>

@@ -31,7 +31,10 @@ namespace BierAlyzerWeb.Controllers
 
             using (var context = ContextHelper.OpenContext())
             {
-                var contextEvent = context.Event.Include(e => e.EventUsers).FirstOrDefault(e => e.EventId == id);
+                var contextEvent = context.Event
+                    .Include(e => e.EventUsers)
+                    .FirstOrDefault(e => e.EventId == id);
+
                 if (contextEvent == null) return RedirectToAction("Events");
 
                 model.EventId = contextEvent.EventId;
@@ -66,7 +69,7 @@ namespace BierAlyzerWeb.Controllers
 
             if (model == null) return RedirectToAction("Events");
             if (model.EventId == Guid.Empty) return RedirectToAction("Events");
-            if (!ModelState.IsValid) return RedirectToAction("Event", new {id = model.EventId});
+            if (!ModelState.IsValid) return RedirectToAction("Event", new { id = model.EventId });
 
             using (var context = ContextHelper.OpenContext())
             {
@@ -80,12 +83,13 @@ namespace BierAlyzerWeb.Controllers
                     contextEvent.Description = model.Description;
                     contextEvent.Start = model.Start;
                     contextEvent.End = model.End;
+                    contextEvent.Type = model.Type;
 
                     context.SaveChanges();
                 }
             }
 
-            return RedirectToAction("Event", new {id = model.EventId});
+            return RedirectToAction("Event", new { id = model.EventId });
         }
 
         #endregion
@@ -110,7 +114,7 @@ namespace BierAlyzerWeb.Controllers
 
             using (var context = ContextHelper.OpenContext())
             {
-                model.Events = context.Event.Include(e => e.EventUsers).ToList();
+                model.Events = context.Event.Include(e => e.EventUsers).Include(e => e.Owner).ToList();
             }
 
             return View(model);
@@ -131,6 +135,8 @@ namespace BierAlyzerWeb.Controllers
         {
             if (!HttpContext.IsSignedIn()) return RedirectToAction("Login", "Account");
             if (!HttpContext.CheckUserType(UserType.Admin)) return RedirectToAction("Events", "Home");
+            var user = HttpContext.GetUser();
+
 
             if (ModelState.IsValid)
             {
@@ -145,7 +151,8 @@ namespace BierAlyzerWeb.Controllers
                         Code = EventHelper.GenerateCode(),
                         Start = model.EventStart,
                         End = model.EventEnd,
-                        Type = EventType.Private
+                        Type = EventType.Private,
+                        OwnerId = user.UserId
                     };
 
                     context.Event.Add(newEvent);
@@ -382,9 +389,10 @@ namespace BierAlyzerWeb.Controllers
         /// <summary>   Handles GET requests for the Drink View </summary>
         /// <remarks>   Andre Beging, 28.04.2018. </remarks>
         /// <param name="id">   The identifier. </param>
+        /// <param name="successMessage"></param>
         /// <returns>   An IActionResult. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public IActionResult Drink(Guid id)
+        public IActionResult Drink(Guid id, string successMessage = null)
         {
             if (!HttpContext.IsSignedIn()) return RedirectToAction("Login", "Account");
             if (!HttpContext.CheckUserType(UserType.Admin)) return RedirectToAction("Events", "Home");
@@ -395,7 +403,10 @@ namespace BierAlyzerWeb.Controllers
 
             using (var context = ContextHelper.OpenContext())
             {
-                var contextDrink = context.Drink.FirstOrDefault(e => e.DrinkId == id);
+                var contextDrink = context.Drink
+                    .Include(d => d.DrinkEntries)
+                    .FirstOrDefault(e => e.DrinkId == id);
+
                 if (contextDrink == null) return RedirectToAction("Drinks");
 
                 model.DrinkId = contextDrink.DrinkId;
@@ -403,9 +414,53 @@ namespace BierAlyzerWeb.Controllers
                 model.Visible = contextDrink.Visible;
                 model.Amount = contextDrink.Amount;
                 model.Percentage = contextDrink.Percentage;
-
-                return View(model);
+                model.UsageCount = contextDrink.DrinkEntries.Count;
             }
+
+            if (successMessage != null)
+            {
+                ViewData["SuccessMessage"] = successMessage;
+            }
+
+            return View(model);
+        }
+
+        #endregion
+
+        #region Drink (POST)
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Handles POST requests for the Drink View </summary>
+        ///
+        /// <remarks>   Andre Beging, 11.05.2018. </remarks>
+        ///
+        /// <param name="model">    The model. </param>
+        ///
+        /// <returns>   An IActionResult. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        [HttpPost]
+        public IActionResult Drink(ManageDrinkModel model)
+        {
+            if (!HttpContext.IsSignedIn()) return RedirectToAction("Login", "Account");
+            if (!HttpContext.CheckUserType(UserType.Admin)) return RedirectToAction("Events", "Home");
+
+            string successMessage = null;
+            if (ModelState.IsValid)
+            {
+                using (var context = ContextHelper.OpenContext())
+                {
+                    var contextDrink = context.Drink.FirstOrDefault(d => d.DrinkId == model.DrinkId);
+                    if (contextDrink != null)
+                    {
+                        contextDrink.Name = model.Name;
+                        context.SaveChanges();
+
+                        successMessage = "Getränk gespeichert!";
+                    }
+                }
+            }
+
+            return RedirectToAction("Drink", new { id = model.DrinkId, successMessage });
         }
 
         #endregion
@@ -439,7 +494,7 @@ namespace BierAlyzerWeb.Controllers
             }
 
 
-            return RedirectToAction("Event", new {id = eventId});
+            return RedirectToAction("Events");
         }
 
         #endregion
@@ -488,7 +543,7 @@ namespace BierAlyzerWeb.Controllers
                 }
             }
 
-            return RedirectToAction("Event", new {id = eventId});
+            return RedirectToAction("Event", new { id = eventId });
         }
 
         #endregion

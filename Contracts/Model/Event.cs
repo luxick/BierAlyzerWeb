@@ -71,6 +71,8 @@ namespace Contracts.Model
 
         #endregion
 
+        #region Status
+
         [NotMapped]
         public EventStatus Status
         {
@@ -81,6 +83,8 @@ namespace Contracts.Model
                 return EventStatus.Closed;
             }
         }
+
+        #endregion
 
         #region Created
 
@@ -133,6 +137,10 @@ namespace Contracts.Model
         }
 
         #endregion
+
+        public Guid OwnerId { get; set; }
+
+        public User Owner { get; set; }
 
         public ICollection<UserEvent> EventUsers { get; set; }
 
