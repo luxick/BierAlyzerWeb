@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
@@ -17,16 +19,23 @@ namespace BierAlyzerWeb.Models
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public BierAlyzerContext CreateDbContext(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
+
+            if(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == EnvironmentName.Development)
+                configurationBuilder.AddJsonFile($"appsettings.Development.json", optional: true);
+            else
+                configurationBuilder.AddJsonFile($"appsettings.json", optional: true);
+            
+
+            var configuration = configurationBuilder.Build();
 
             var builder = new DbContextOptionsBuilder<BierAlyzerContext>();
 
             var connectionString = configuration.GetConnectionString("Database");
 
-            builder.UseSqlite(connectionString);
+            //builder.UseSqlite(connectionString);
+            builder.UseMySql(connectionString);
 
             return new BierAlyzerContext(builder.Options);
         }
