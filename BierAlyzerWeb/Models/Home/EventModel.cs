@@ -13,6 +13,7 @@ namespace BierAlyzerWeb.Models.Home
         {
             Drinks = new List<Drink>();
             EventUsers = new List<EventUserModel>();
+            DrinkUsage = new Dictionary<string, int>();
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,5 +33,12 @@ namespace BierAlyzerWeb.Models.Home
         /// <value> The event users. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public List<EventUserModel> EventUsers { get; set; }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets or sets the drink usage. </summary>
+        ///
+        /// <value> The drink usage. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public Dictionary<string, int> DrinkUsage { get; set; }
     }
 }

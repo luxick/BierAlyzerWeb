@@ -1,38 +1,47 @@
 ﻿@using System.Globalization
 @using Contracts.Model
-@using Microsoft.AspNetCore.Html
 @model BierAlyzerWeb.Models.Home.EventModel
 
 @{
     ViewData["Title"] = Model.Event.Name;
 }
 
-@{
-    var bookingButtonEnabled = Model.Event.Status == EventStatus.Open;
-}
-
 <div class="row">
 
-    @if (!bookingButtonEnabled)
-    {
-        <div class="col-8"><h4>@Model.Event.Name<br /><span style="font-size: .6em; font-weight: normal;">(geschlossen)</span></h4></div>
-        <div class="col-4">
-            <button class="btn btn-lg " style="width: 100%;" data-toggle="modal" data-target="#addEntryModal" disabled>
+    <div class="col-8">
+        <button class="btn btn-sm btn-default" style="width: 30px;" title="Event Info" data-toggle="modal" data-target="#descriptionModal">
+            <i class="fas fa-info"></i>
+        </button>
+        <button class="btn btn-sm btn-default" style="width: 30px;" title="Event verlassen" data-toggle="modal" data-target="#leaveEventModal">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+        <button class="btn btn-sm btn-default" style="width: 30px;" title="Event Statistik" data-toggle="modal" data-target="#statsModal">
+            <i class="fas fa-chart-pie"></i>
+        </button>
+    </div>
+    <div class="col-4">
+        @if (Model.Event.Status == EventStatus.Open)
+        {
+            <button class="btn btn-lg " style="width: 100%;" data-toggle="modal" data-target="#addEntryModal" title="Buchen">
                 <i class="fas fa-beer"></i>
             </button>
-        </div>
-    }
-    else
-    {
-        <div class="col-8"><h4>@Model.Event.Name</h4></div>
-        <div class="col-4">
-            <button class="btn btn-lg" style="width: 100%;" data-toggle="modal" data-target="#addEntryModal">
+        }
+        else
+        {
+            <button class="btn btn-lg disabled" style="width: 100%;" title="Buchen">
                 <i class="fas fa-beer"></i>
             </button>
-        </div>
-    }
-
+        }
+    </div>
 </div>
+
+<h4>
+    @Model.Event.Name
+    @if (Model.Event.Status != EventStatus.Open)
+    {
+        <br /><span style="font-size: .6em; font-weight: normal;">(geschlossen)</span>
+    }
+</h4>
 
 @section Style
     {
@@ -52,22 +61,13 @@
     <tbody>
         @for (int i = 0; i < Model.EventUsers.Count; i++)
         {
-            var kingSign = HtmlString.Empty;
-            if (i == 0)
-            {
-                kingSign = new HtmlString("<i class=\"fas fa-beer\"></i> <i class=\"fas fa-chess-king\"></i> ");
-                kingSign = HtmlString.Empty;
-            }
-
             <tr onclick="javscript: showUserDetails('@(Model.EventUsers[i].User.UserId.ToString("N"))');">
-                <td style="width: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@(i + 1). @(kingSign)@Model.EventUsers[i].User.Username (@Model.EventUsers[i].User.Origin)</td>
+                <td style="width: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@(i + 1). @Model.EventUsers[i].User.Username (@Model.EventUsers[i].User.Origin)</td>
                 <td style="width: 70px; white-space: nowrap;" class="text-right">@Model.EventUsers[i].Amount.ToString("F1", CultureInfo.InvariantCulture).Replace(".", ",") l</td>
             </tr>
         }
     </tbody>
 </table>
-
-<button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#leaveEventModal" style="width: 100%; margin-top: 15px; white-space: normal;">Event verlassen</button>
 
 <!-- #region Booking Modal -->
 
@@ -110,10 +110,60 @@
                 </button>
             </div>
             <div class="modal-body" style="padding-top: 5px;">
-                Bist du dir sicher? Die anderen Teilnehmer werden sehr traurig sein!
+                Bist du dir sicher? Die anderen Teilnehmer werden sehr traurig sein!<br />
+                Solange das Event öffentlich ist, kannst du natürlich jederzeit wieder beitreten.
             </div>
             <div class="modal-footer">
                 <a class="btn btn-default" style="color: #000;" asp-action="LeaveEvent" asp-route-id="@Model.Event.EventId">Event verlassen</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #endregion -->
+<!-- #region Description Modal -->
+
+<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="descriptionModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.Event.Name</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top: 5px;">
+                @Model.Event.Description
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #endregion -->
+<!-- #region Statistics Modal -->
+
+<div class="modal fade" id="statsModal" tabindex="-1" role="dialog" aria-labelledby="statsModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.Event.Name<br /><small>Statistiken</small></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top: 20px;">
+                <p style="margin-bottom: 0;">@Model.EventUsers.Count teilnehmende Trinker</p>
+                <p style="margin-bottom: 0;">@Model.EventUsers.Sum(x => x.Amount) Liter verbucht</p>
+                <p>@Model.EventUsers.Sum(x => x.AlcoholAmount) Gramm Alkohol konsumiert</p>
+                <table class="table" style="margin-bottom: 0;">
+                    @foreach (var usage in Model.DrinkUsage)
+                    {
+                    <tr>
+                        <td class="text-right" style="width: 60px; padding-right: 0; padding-top: 0; padding-bottom: 5px;">@(usage.Value)x</td>
+                        <td style="padding-top: 0; padding-bottom: 0;">@usage.Key</td>
+                    </tr>
+                    }
+                </table>
             </div>
         </div>
     </div>

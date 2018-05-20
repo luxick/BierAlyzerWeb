@@ -6,10 +6,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BierAlyzer Online - @ViewData["Title"]</title>
-    @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />*@
-    @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />*@
-    @*<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.11/css/all.css" integrity="sha384-p2jx59pefphTFIpeqCcISO9MdVfIm4pNnsL08A6v5vaQc4owkQqxMV8kg4Yvhaw/" crossorigin="anonymous" />*@
-    @*<link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">*@
     <link rel="stylesheet" href="~/css/bieralyzer.min.css" asp-append-version="true" />
     @RenderSection("Style", required: false)
     @Html.Partial("_Favicons")
@@ -47,11 +43,6 @@
         </footer>
     </div>
 
-    @*<script src="~/js/global/jquery-3.3.1.slim.min.js"></script>
-        <script src="~/js/global/popper-1.14.3.min.js"></script>
-        <script src="~/js/global/bootstrap-4.0.0.min.js"></script>*@
-    @*<script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
-        <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>*@
     <script src="~/js/bieralyzer.min.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>

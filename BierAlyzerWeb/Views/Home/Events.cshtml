@@ -42,20 +42,22 @@
     </div>
 }
 
-@*<div class="card" style="margin-top: 15px;">
-        <div class="card-body" style="padding: 15px 15px 15px 15px;">
-            <form asp-route="events">
-                <input asp-for="EventCode" placeholder="Eventcode" style="width: 100%;" />
-                <button class="btn btn-default" type="submit" style="width: 100%; margin-top: 10px;">Privatem Event beitreten</button>
-            </form>
-        </div>
+<div class="card" style="margin-top: 15px;">
+    <div class="card-header">
+        Private Events
     </div>
-
-    <div class="card" style="margin-top: 15px;">
-        <div class="card-body" style="padding: 15px 15px 15px 15px;">
-            <button class="btn btn-sm btn-default" style="width: 100%; white-space: normal;" disabled>Privates Event erstellen<br />(coming soon)</button>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <button style="width: 100%;" class="btn btn-default" data-toggle="modal" data-target="#joinPrivateEvent">Beitreten</button>
+            </div>
+            <div class="col">
+                <button style="width: 100%;" class="btn btn-default disabled">Erstellen<br />(coming soon)</button>
+            </div>
         </div>
-    </div>*@
+        
+    </div>
+</div>
 
 @foreach (var e in Model.PublicEvents)
 {
@@ -82,3 +84,23 @@
         </div>
     </div>
 }
+
+<div class="modal fade" id="joinPrivateEvent" tabindex="-1" role="dialog" aria-labelledby="joinPrivateEvent" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Privaten Event beitreten</h5>
+            </div>
+            <form asp-route="events">
+                <div class="modal-body">
+                    <input asp-for="EventCode" placeholder="Eventcode" style="width: 100%;" />
+                </div>
+                <div class="modal-footer" style="padding: 0;">
+                    <div style="width: 100%;" class="text-center">
+                        <button type="submit" class="btn btn-default" style="white-space: normal;">Beitreten</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -128,6 +128,18 @@ namespace BierAlyzerWeb.Controllers
             var eventUsers = new List<EventUserModel>();
             foreach (var drinkEntry in contextEvent.DrinkEntries)
             {
+                // Drink Usage
+                var drinkDisplayName = string.Format("{0} ({1} l)", drinkEntry.Drink.Name, drinkEntry.Drink.Amount);
+                if (model.DrinkUsage.ContainsKey(drinkDisplayName))
+                {
+                    model.DrinkUsage[drinkDisplayName] += 1;
+                }
+                else
+                {
+                    model.DrinkUsage.Add(drinkDisplayName, 1);
+                }
+
+                // EventUser
                 var eventUser = eventUsers.FirstOrDefault(eu => eu.User.UserId == drinkEntry.UserId);
                 if (eventUser == null)
                 {
@@ -144,6 +156,9 @@ namespace BierAlyzerWeb.Controllers
                     eventUser.AlcoholAmount += drinkEntry.Drink.AlcoholAmount;
                 }
             }
+
+            model.DrinkUsage = model.DrinkUsage.OrderByDescending(x => x.Key)
+                .ToDictionary(x => x.Key, x => x.Value);
 
             model.EventUsers = eventUsers
                 .OrderByDescending(eu => eu.Amount)
