@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20180524132925_DrinkOwner.cs" />
+    <Compile Remove="Migrations\20180524132925_DrinkOwner.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="LigerShark.WebOptimizer.Core" Version="1.0.215" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.0.2" />

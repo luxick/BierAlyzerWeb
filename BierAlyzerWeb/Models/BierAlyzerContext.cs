@@ -59,6 +59,11 @@ namespace BierAlyzerWeb.Models
                 .HasOne(e => e.Owner)
                 .WithMany(u => u.OwnedEvents)
                 .HasForeignKey(e => e.OwnerId);
+
+            modelBuilder.Entity<Drink>()
+                .HasOne(d => d.Owner)
+                .WithMany(u => u.OwnedDrinks)
+                .HasForeignKey(e => e.OwnerId);
         }
 
         #endregion

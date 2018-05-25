@@ -5,12 +5,34 @@ using BierAlyzerWeb.Helper;
 using BierAlyzerWeb.Models.Home;
 using Contracts.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 
 namespace BierAlyzerWeb.Controllers
 {
     public class HomeController : Controller
     {
+        #region OnActionExecuting
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Executes the action executing action. </summary>
+        ///
+        /// <remarks>   Andre Beging, 24.05.2018. </remarks>
+        ///
+        /// <param name="context">  The context. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            if (!context.HttpContext.IsSignedIn())
+            {
+                context.Result = RedirectToAction("Login", "Account");
+                return;
+            }
+
+            base.OnActionExecuting(context);
+        }
+
+        #endregion
+
         #region Events (GET)
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,12 +42,10 @@ namespace BierAlyzerWeb.Controllers
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public IActionResult Events()
         {
-            if (!HttpContext.IsSignedIn()) return RedirectToAction("Login", "Account");
-
             var user = HttpContext.GetUser();
             if (user == null) return RedirectToAction("Login", "Account");
 
-            var model = new EventsModel {User = user};
+            var model = new EventsModel { User = user };
 
             using (var context = ContextHelper.OpenContext())
             {
@@ -58,8 +78,6 @@ namespace BierAlyzerWeb.Controllers
         [HttpPost]
         public IActionResult Events(EventsModel model)
         {
-            if (!HttpContext.IsSignedIn()) return RedirectToAction("Login", "Account");
-
             if (ModelState.IsValid)
             {
                 var user = HttpContext.GetUser();
@@ -102,8 +120,6 @@ namespace BierAlyzerWeb.Controllers
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public IActionResult Event(Guid id)
         {
-            if (!HttpContext.IsSignedIn()) return RedirectToAction("Login", "Account");
-
             if (id == Guid.Empty) return RedirectToAction("Events");
 
             var model = new EventModel();
@@ -180,8 +196,6 @@ namespace BierAlyzerWeb.Controllers
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public IActionResult UserProfile()
         {
-            if (!HttpContext.IsSignedIn()) return RedirectToAction("Login", "Account");
-
             var user = HttpContext.GetUser();
             if (user == null) return RedirectToAction("Login", "Account");
 
@@ -209,8 +223,6 @@ namespace BierAlyzerWeb.Controllers
         [HttpPost]
         public IActionResult UserProfile(UserProfileModel model)
         {
-            if (!HttpContext.IsSignedIn()) return RedirectToAction("Login", "Account");
-
             var changePassword = false;
             if (!string.IsNullOrWhiteSpace(model.Password) || !string.IsNullOrWhiteSpace(model.PasswordConfirmation))
             {
@@ -270,6 +282,21 @@ namespace BierAlyzerWeb.Controllers
 
         #endregion
 
+        #region UserEvents (GET)
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   User events. </summary>
+        ///
+        /// <remarks>   Andre Beging, 25.05.2018. </remarks>
+        ///
+        /// <returns>   An IActionResult. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public IActionResult UserEvents()
+        {
+            return View();
+        }
+
+        #endregion
+
         #region JoinPublicEvent
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -319,8 +346,6 @@ namespace BierAlyzerWeb.Controllers
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public IActionResult LeaveEvent(Guid id)
         {
-            if (!HttpContext.IsSignedIn()) RedirectToAction("Login", "Account");
-
             if (id == Guid.Empty) return RedirectToAction("Events");
 
             var user = HttpContext.GetUser();
@@ -352,7 +377,6 @@ namespace BierAlyzerWeb.Controllers
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public IActionResult BookDrink(string id)
         {
-            if (!HttpContext.IsSignedIn()) return RedirectToAction("Login", "Account");
             var user = HttpContext.GetUser();
             if (user == null) return RedirectToAction("Login", "Account");
 
@@ -366,7 +390,7 @@ namespace BierAlyzerWeb.Controllers
                 var contextEvent = context.Event.FirstOrDefault(e => e.EventId == eventId);
                 if (contextEvent == null) return RedirectToAction("Events");
 
-                if (!context.Drink.Any(e => e.DrinkId == drinkId)) return RedirectToAction("Event", new {id = eventId});
+                if (!context.Drink.Any(e => e.DrinkId == drinkId)) return RedirectToAction("Event", new { id = eventId });
 
                 if (context.GetEventUsers(eventId).Any(u => u.UserId == user.UserId) &&
                     contextEvent.Status == EventStatus.Open)
@@ -382,7 +406,7 @@ namespace BierAlyzerWeb.Controllers
                     context.SaveChanges();
                 }
 
-                return RedirectToAction("Event", new {id = eventId});
+                return RedirectToAction("Event", new { id = eventId });
             }
         }
 

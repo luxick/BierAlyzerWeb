@@ -24,6 +24,10 @@ namespace Contracts.Model
 
         public ICollection<DrinkEntry> DrinkEntries { get; set; }
 
+        public Guid? OwnerId { get; set; }
+
+        public User Owner { get; set; }
+
         #region Created
 
         [NotMapped]
