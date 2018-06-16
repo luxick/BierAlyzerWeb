@@ -123,7 +123,7 @@ namespace BierAlyzerWeb
                 routes.MapRoute("JoinPublicEvent", "joinpublic", new { controller = "Home", action = "JoinPublicEvent" });
                 routes.MapRoute("BookDrink", "book", new { controller = "Home", action = "BookDrink" });
                 routes.MapRoute("LeaveEvent", "leave", new { controller = "Home", action = "LeaveEvent" });
-                routes.MapRoute("UserEvents", "uservents", new { controller = "Home", action = "UserEvents" });
+                routes.MapRoute("UserEvents", "userevents", new { controller = "Home", action = "UserEvents" });
 
                 // ManagementController
                 routes.MapRoute("ManageEvents", "manageevents", new { controller = "Management", action = "Events" });
