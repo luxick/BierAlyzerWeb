@@ -70,6 +70,11 @@
                         <select asp-for="Type" class="form-control" style="width: 100%;" placeholder="Typ" asp-items="Html.GetEnumSelectList<Contracts.Model.EventType>()" autocomplete="off"></select>
                         <span asp-validation-for="Type" class="text-danger"></span>
                     </div>
+                    <div class="form-group">
+                        <label asp-for="EventOwner" style="margin-bottom: 0;" class="bmd-label-static">Besitzer</label>
+                        <select asp-for="EventOwner" class="form-control" style="width: 100%;" placeholder="Typ" asp-items="@(new SelectList(Model.UserList, "Key", "Value"))" autocomplete="off"></select>
+                        <span asp-validation-for="EventOwner" class="text-danger"></span>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-default">Speichern</button>

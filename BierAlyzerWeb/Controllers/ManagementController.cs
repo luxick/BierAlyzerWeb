@@ -70,6 +70,8 @@ namespace BierAlyzerWeb.Controllers
                 model.Type = contextEvent.Type;
                 model.Status = contextEvent.Status;
                 model.UserCount = contextEvent.EventUsers.Count;
+                model.EventOwner = contextEvent.OwnerId;
+                model.UserList = context.User.ToDictionary(x => x.UserId, x => string.Format("{0} ({1})", x.Username, x.Mail));
 
                 return View(model);
             }
@@ -101,10 +103,14 @@ namespace BierAlyzerWeb.Controllers
                     if (!string.IsNullOrWhiteSpace(model.Name))
                         contextEvent.Name = model.Name;
 
+                    if (model.EventOwner != Guid.Empty)
+                        contextEvent.OwnerId = model.EventOwner;
+
                     contextEvent.Description = model.Description;
                     contextEvent.Start = model.Start;
                     contextEvent.End = model.End;
                     contextEvent.Type = model.Type;
+
 
                     context.SaveChanges();
                 }

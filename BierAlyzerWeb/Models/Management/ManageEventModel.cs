@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using BierAlyzerWeb.Helper;
 using Contracts.Model;
@@ -66,5 +67,19 @@ namespace BierAlyzerWeb.Models.Management
         /// <value> The number of users. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public int UserCount { get; set; }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets or sets the event that owns this item. </summary>
+        ///
+        /// <value> The event owner. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public Guid EventOwner { get; set; }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets or sets a list of users. </summary>
+        ///
+        /// <value> A List of users. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public Dictionary<Guid, string> UserList { get; set; } = new Dictionary<Guid, string>();
     }
 }
