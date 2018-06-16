@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using BierAlyzerWeb.Helper;
 using BierAlyzerWeb.Models.Home;
+using BierAlyzerWeb.Models.Management;
 using Contracts.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -292,7 +294,116 @@ namespace BierAlyzerWeb.Controllers
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public IActionResult UserEvents()
         {
-            return View();
+            var user = HttpContext.GetUser();
+            if (user == null) return RedirectToAction("Login", "Account");
+
+            var model = new ManageEventsModel
+            {
+                EventStart = DateTime.Today,
+                EventEnd = DateTime.Today.AddDays(1)
+            };
+
+            using (var context = ContextHelper.OpenContext())
+            {
+                var events = context.Event
+                    .Where(x => x.OwnerId == user.UserId && x.Type != EventType.Public)
+                    .Include(e => e.EventUsers)
+                    .Include(e => e.Owner)
+                    .ToList();
+
+                model.Events = events.OrderBy(e => e.Status).ToList();
+            }
+
+            return View(model);
+        }
+
+        #endregion
+
+        #region UserEvents (POST)
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   (An Action that handles HTTP POST requests) user events. </summary>
+        ///
+        /// <remarks>   Andre Beging, 25.05.2018. </remarks>
+        ///
+        /// <returns>   An IActionResult. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        [HttpPost]
+        public IActionResult UserEvents(ManageEventsModel model)
+        {
+            var user = HttpContext.GetUser();
+            if (user == null) return RedirectToAction("Login", "Account");
+
+            if (ModelState.IsValid)
+            {
+                using (var context = ContextHelper.OpenContext())
+                {
+                    var newEvent = new Event
+                    {
+                        Name = model.EventName,
+                        Description = model.EventDescription,
+                        Created = DateTime.Now,
+                        Modified = DateTime.Now,
+                        Code = EventHelper.GenerateCode(),
+                        Start = model.EventStart,
+                        End = model.EventEnd,
+                        Type = EventType.Private,
+                        OwnerId = user.UserId
+                    };
+
+                    context.Event.Add(newEvent);
+                    var changes = context.SaveChanges();
+
+                    if (changes == 1)
+                    {
+                        return RedirectToAction("UserEvents");
+                    }
+                }
+            }
+
+            return View(model);
+        }
+
+        #endregion
+
+        #region UserEvent
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   User event. </summary>
+        ///
+        /// <remarks>   Andre Beging, 25.05.2018. </remarks>
+        ///
+        /// <param name="id">   The identifier. </param>
+        ///
+        /// <returns>   An IActionResult. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public IActionResult UserEvent(Guid id)
+        {
+            if (id == Guid.Empty) return RedirectToAction("UserEvents");
+
+            var user = HttpContext.GetUser();
+            if (user == null) return RedirectToAction("Login", "Account");
+
+            var model = new ManageEventModel();
+
+            using (var context = ContextHelper.OpenContext())
+            {
+                var contextEvent = context.Event
+                    .Include(e => e.EventUsers)
+                    .FirstOrDefault(e => e.EventId == id && e.OwnerId == user.UserId && e.Type != EventType.Public);
+
+                if (contextEvent == null) return RedirectToAction("UserEvents");
+
+                model.EventId = contextEvent.EventId;
+                model.Start = contextEvent.Start;
+                model.End = contextEvent.End;
+                model.Name = contextEvent.Name;
+                model.Description = contextEvent.Description;
+                model.Code = contextEvent.Code;
+                model.Status = contextEvent.Status;
+                model.UserCount = contextEvent.EventUsers.Count;
+
+                return View(model);
+            }
         }
 
         #endregion
@@ -408,6 +519,75 @@ namespace BierAlyzerWeb.Controllers
 
                 return RedirectToAction("Event", new { id = eventId });
             }
+        }
+
+        #endregion
+
+        public IActionResult RemoveEvent(Guid id)
+        {
+            if (id == Guid.Empty) return RedirectToAction("UserEvents");
+
+            var user = HttpContext.GetUser();
+            if (user == null) return RedirectToAction("Login", "Account");
+
+            using (var context = ContextHelper.OpenContext())
+            {
+                var contextEvent = context.Event.FirstOrDefault(e => e.EventId == id && e.OwnerId == user.UserId && e.Type != EventType.Public);
+                if (contextEvent != null)
+                {
+                    context.Remove(contextEvent);
+                    context.SaveChanges();
+                }
+            }
+
+            return RedirectToAction("UserEvent", new { id });
+        }
+
+        #region SetEventStatus
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Handles GET requests for the SetEventStatus Action </summary>
+        /// <remarks>   Andre Beging, 27.04.2018. </remarks>
+        /// <param name="id">   The identifier. </param>
+        /// <returns>   An IActionResult. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public IActionResult SetEventStatus(string id)
+        {
+            var user = HttpContext.GetUser();
+            if (user == null) return RedirectToAction("Login", "Account");
+
+            var parameters = id.Split("#");
+            if (parameters.Length != 2) return RedirectToAction("UserEvents");
+            if (!Guid.TryParse(parameters[0], out var eventId)) return RedirectToAction("UserEvents");
+            if (!Enum.TryParse(parameters[1], out EventStatus status)) return RedirectToAction("UserEvents");
+
+            using (var context = ContextHelper.OpenContext())
+            {
+                var contextEvent = context.Event.FirstOrDefault(e => e.EventId == eventId && e.OwnerId == user.UserId && e.Type != EventType.Public);
+                if (contextEvent != null)
+                {
+                    if (status == EventStatus.Open)
+                    {
+                        // Is start in the future?
+                        if (contextEvent.Start > DateTime.Now)
+                            contextEvent.Start = DateTime.Now.AddMinutes(-1);
+
+                        contextEvent.End = DateTime.Now.AddDays(1);
+                    }
+
+                    if (status == EventStatus.Closed)
+                    {
+                        contextEvent.End = DateTime.Now.AddMinutes(-1);
+
+                        if (contextEvent.Start > contextEvent.End)
+                            contextEvent.Start = DateTime.Today;
+                    }
+
+                    context.SaveChanges();
+                }
+            }
+
+            return RedirectToAction("UserEvent", new { id = eventId });
         }
 
         #endregion

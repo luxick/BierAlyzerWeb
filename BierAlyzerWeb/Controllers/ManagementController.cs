@@ -127,7 +127,7 @@ namespace BierAlyzerWeb.Controllers
             var model = new ManageEventsModel
             {
                 EventStart = DateTime.Today,
-                EventEnd = DateTime.Today.AddDays(5)
+                EventEnd = DateTime.Today.AddDays(1)
             };
 
             using (var context = ContextHelper.OpenContext())
