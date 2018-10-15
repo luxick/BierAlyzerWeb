@@ -125,6 +125,9 @@ namespace BierAlyzerWeb
                 routes.MapRoute("LeaveEvent", "leave", new { controller = "Home", action = "LeaveEvent" });
                 routes.MapRoute("UserEvents", "userevents", new { controller = "Home", action = "UserEvents" });
 
+                // Archive Controller
+                routes.MapRoute("Archive", "archive", new { controller = "Archive", action = "Archive" });
+
                 // ManagementController
                 routes.MapRoute("ManageEvents", "manageevents", new { controller = "Management", action = "Events" });
                 routes.MapRoute("ManageEvent", "manageevent", new { controller = "Management", action = "Event" });

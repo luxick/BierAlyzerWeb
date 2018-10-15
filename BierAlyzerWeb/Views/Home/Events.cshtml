@@ -76,6 +76,20 @@
     </div>
 </div>
 
+<div class="card" style="margin-top: 15px">
+    <div class="card-header">
+        Vergangene Events
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <a style="width: 100%;" class="btn btn-default" asp-controller="Archive" asp-action="Archive">Alle Events Anzeigen</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 @foreach (var e in Model.PublicEvents)
 {
     <div class="modal fade" id="publicEventPopup@(e.EventId)" tabindex="-1" role="dialog" aria-labelledby="publicEventPopup@(e.EventId)" aria-hidden="true">
