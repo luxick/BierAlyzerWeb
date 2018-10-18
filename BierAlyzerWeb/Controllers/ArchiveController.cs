@@ -1,19 +1,16 @@
 ﻿using BierAlyzerWeb.Helper;
+using BierAlyzerWeb.Models.Archive;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Linq;
+using Contracts.Model;
 
 namespace BierAlyzerWeb.Controllers
 {
     public class ArchiveController : Controller
     {
-        #region OnActionExecuting
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Executes the action executing action. </summary>
-        ///
-        /// <remarks>   Andre Beging, 24.05.2018. </remarks>
-        ///
         /// <param name="context">  The context. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             if (!context.HttpContext.IsSignedIn())
@@ -25,11 +22,17 @@ namespace BierAlyzerWeb.Controllers
             base.OnActionExecuting(context);
         }
 
-        #endregion
-
+        /// <summary> Return all closed Events </summary>
         public IActionResult Archive()
         {
-            return View();
+            var model = new ArchiveModel { User = HttpContext.GetUser() };
+            using (var context = ContextHelper.OpenContext())
+            {
+                model.Events = context.GetUserEvents(model.User.UserId)
+                    .Where(x => x.Status == EventStatus.Closed)
+                    .ToList();
+            }
+            return View(model);
         }
     }
 }
