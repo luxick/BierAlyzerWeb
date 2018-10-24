@@ -138,5 +138,31 @@ namespace BierAlyzerWeb.Controllers
         }
 
         #endregion
+
+        [HttpGet]
+        public IActionResult VerifyMember()
+        {
+            if (!HttpContext.IsSignedIn()) return RedirectToAction("Login", "Account");
+            return View(new VerifyMemberModel { UserName = HttpContext.GetUser().Username });
+        }
+
+        [HttpPost]
+        public IActionResult VerifyMember(VerifyMemberModel model)
+        {
+            if (!HttpContext.IsSignedIn()) return RedirectToAction("Login", "Account");
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["ErrorMessage"] = "Irgentwas ist beim senden der anfrage schief gegangen!";
+                return View(model);
+            }
+
+            using (var context = ContextHelper.OpenContext())
+            {
+                // TODO Enter verify request into database
+            }
+
+            return View(model);
+        }
     }
 }
