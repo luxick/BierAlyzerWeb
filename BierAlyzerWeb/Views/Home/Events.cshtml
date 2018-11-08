@@ -4,34 +4,11 @@
     ViewData["Title"] = "Übersicht";
 }
 
-
-<div class="card">
-    <div class="card-header">
-        <div class="row">
-            <div class="col-12" style="margin-top: auto; margin-bottom: auto;">Aktuelle Events</div>
-        </div>
-    </div>
-    <div class="card-body" style="padding: 0 15px 15px 15px">
-        @if (Model.Events.Any())
-        {
-            foreach (var e in Model.Events)
-            {
-                <a class="btn btn-sm btn-default" style="width: 100%; margin-top: 15px; color: #000; white-space: normal;" asp-action="Event" asp-route-id="@e.EventId">@e.Name</a>
-            }
-        }
-        else
-        {
-            <div style="margin-top: 15px;">Du bist noch keinem Event beigetreten</div>
-        }
-    </div>
-</div>
-
-
 @if (Model.PublicEvents.Any())
 {
-    <div class="card" style="margin-top: 15px;">
+    <div class="card">
         <div class="card-header">
-            Öffentliche Events
+            Globale Events
         </div>
         <div class="card-body" style="padding: 15px 15px 0 15px;">
             @foreach (var e in Model.PublicEvents)
@@ -42,7 +19,47 @@
     </div>
 }
 
-<div class="card" style="margin-top: 15px;">
+@if (Model.Events.Any())
+{
+    <div class="card" style="margin-top: 15px">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-12" style="margin-top: auto; margin-bottom: auto;">Laufende Events</div>
+            </div>
+        </div>
+        <div class="card-body" style="padding: 0 15px 15px 15px">
+            @if (Model.Events.Any())
+            {
+                foreach (var e in Model.Events)
+                {
+                    <a class="btn btn-sm btn-default" style="width: 100%; margin-top: 15px; color: #000; white-space: normal;" asp-action="Event" asp-route-id="@e.EventId">@e.Name</a>
+                }
+            }
+            else
+            {
+                <div style="margin-top: 15px;">Du bist noch keinem Event beigetreten</div>
+            }
+        </div>
+    </div>
+}
+@if (Model.RecentEvents.Any())
+{
+    <div class="card" style="margin-top: 15px">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-12" style="margin-top: auto; margin-bottom: auto;">Kürzlich Beendet</div>
+            </div>
+        </div>
+        <div class="card-body" style="padding: 0 15px 15px 15px">
+            @foreach (var e in Model.RecentEvents)
+            {
+                <a class="btn btn-sm btn-default" style="width: 100%; margin-top: 15px; color: #000; white-space: normal;" asp-action="Event" asp-route-id="@e.EventId">@e.Name</a>
+            }
+        </div>
+    </div>
+}
+
+<div class="card" style="margin-top: 15px">
     <div class="card-header">
         Private Events
     </div>
@@ -56,6 +73,20 @@
             </div>
         </div>
         
+    </div>
+</div>
+
+<div class="card" style="margin-top: 15px">
+    <div class="card-header">
+        Vergangene Events
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <a style="width: 100%;" class="btn btn-default" asp-controller="Archive" asp-action="Archive">Alle Events Anzeigen</a>
+            </div>
+        </div>
+
     </div>
 </div>
 
