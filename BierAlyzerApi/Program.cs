@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BierAlyzerApi
 {
@@ -14,12 +9,23 @@ namespace BierAlyzerApi
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            using (var host = CreateWebHostBuilder(args).Build())
+            {
+                var config = host.Services.GetService<IConfiguration>();
+
+                try
+                {
+                    host.Run();
+                }
+                finally
+                {
+                    // TODO: Perform log
+                }
+            }
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
+                .UseStartup<Startup>();
     }
 }
