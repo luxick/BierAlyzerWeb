@@ -33,9 +33,11 @@ namespace BierAlyzerWeb.Models
             var builder = new DbContextOptionsBuilder<BierAlyzerContext>();
 
             var connectionString = configuration.GetConnectionString("Database");
-
-            //builder.UseSqlite(connectionString);
-            builder.UseMySql(connectionString);
+            
+            if(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == EnvironmentName.Development)
+                builder.UseSqlite(connectionString);
+            else
+                builder.UseMySql(connectionString);
 
             return new BierAlyzerContext(builder.Options);
         }
