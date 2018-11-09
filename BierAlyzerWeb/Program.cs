@@ -14,9 +14,6 @@ namespace BierAlyzerWeb
         {
             using (var context = ContextHelper.OpenContext())
             {
-                // Migrate current Database
-                context.Database.Migrate();
-
                 #region EnsureAdmin
 
                 var defaultAdminMail = "bier@troogs.de";

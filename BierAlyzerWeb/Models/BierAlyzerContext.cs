@@ -23,7 +23,7 @@ namespace BierAlyzerWeb.Models
             if (!_created)
             {
                 _created = true;
-                Database.EnsureCreated();
+                Database.Migrate();
             }
         }
 
@@ -38,7 +38,7 @@ namespace BierAlyzerWeb.Models
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserEvent>().HasKey(ue => new {ue.UserId, ue.EventId});
+            modelBuilder.Entity<UserEvent>().HasKey(ue => new { ue.UserId, ue.EventId });
 
             modelBuilder.Entity<DrinkEntry>()
                 .HasOne(de => de.Event)
