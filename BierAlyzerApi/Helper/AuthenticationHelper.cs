@@ -1,6 +1,10 @@
 ﻿using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BierAlyzerApi.Helper
 {
@@ -62,5 +66,108 @@ namespace BierAlyzerApi.Helper
         }
 
         #endregion
+
+        #region GenerateAccessToken
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Generates an access token. </summary>
+        /// <remarks>   Andre Beging, 09.11.2018. </remarks>
+        /// <param name="configuration">    The configuration. </param>
+        /// <param name="userClaims">       The user claims. </param>
+        /// <returns>   The access token. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public static JwtSecurityToken GenerateAccessToken(IConfiguration configuration, Claim[] userClaims)
+        {
+            return GenerateToken(configuration, userClaims, GenerateTokenType.Access);
+        }
+
+        #endregion GenerateAccessToken
+
+        #region GenerateRefreshToken
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Generates a refresh token. </summary>
+        /// <remarks>   Andre Beging, 09.11.2018. </remarks>
+        /// <param name="configuration">    The configuration. </param>
+        /// <param name="userClaims">       The user claims. </param>
+        /// <returns>   The refresh token. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public static JwtSecurityToken GenerateRefreshToken(IConfiguration configuration, Claim[] userClaims)
+        {
+            return GenerateToken(configuration, userClaims, GenerateTokenType.Refresh);
+        }
+
+        #endregion GenerateRefreshToken
+
+        #region ValidateLifetime
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Validates the lifetime of a token </summary>
+        /// <remarks>   Andre Beging, 09.11.2018. </remarks>
+        /// <param name="notbefore">            The notbefore. </param>
+        /// <param name="expires">              The expires. </param>
+        /// <param name="securitytoken">        The securitytoken. </param>
+        /// <param name="validationparameters"> The validationparameters. </param>
+        /// <returns>   True if it succeeds, false if it fails. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public static bool ValidateLifetime(DateTime? notbefore, DateTime? expires, SecurityToken securitytoken, TokenValidationParameters validationparameters)
+        {
+            return !(expires < DateTime.UtcNow);
+        }
+
+        #endregion ValidateLifetime
+
+        #region Private functions
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Generates a token. </summary>
+        /// <remarks>   Andre Beging, 09.11.2018. </remarks>
+        /// <param name="configuration">    The configuration. </param>
+        /// <param name="userClaims">       The user claims. </param>
+        /// <param name="type">             The type. </param>
+        /// <returns>   The token. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        private static JwtSecurityToken GenerateToken(IConfiguration configuration, Claim[] userClaims, GenerateTokenType type)
+        {
+            var jwtConfiguration = configuration.GetSection("Jwt");
+
+            int lifeTime;
+            DateTime expireDate;
+            switch (type)
+            {
+                case GenerateTokenType.Access:
+                    lifeTime = jwtConfiguration.GetValue<int>("TokenLifetime");
+                    expireDate = DateTime.UtcNow.AddSeconds(lifeTime);
+                    break;
+                case GenerateTokenType.Refresh:
+                    lifeTime = jwtConfiguration.GetValue<int>("RefreshTokenLifetime");
+                    expireDate = DateTime.UtcNow.AddMinutes(lifeTime);
+                    break;
+                default:
+                    return null;
+            }
+
+            var issuer = jwtConfiguration.GetValue<string>("Issuer");
+            var audience = jwtConfiguration.GetValue<string>("Audience");
+            var secret = jwtConfiguration.GetValue<string>("Key");
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            return new JwtSecurityToken(
+                audience: audience,
+                issuer: issuer,
+                claims: userClaims,
+                expires: expireDate,
+                signingCredentials: creds);
+        }
+
+        #endregion Private functions
+
+        private enum GenerateTokenType
+        {
+            Access,
+            Refresh
+        }
     }
 }

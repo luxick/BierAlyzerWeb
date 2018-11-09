@@ -74,6 +74,7 @@ namespace BierAlyzerApi.Models
         public DbSet<Event> Event { get; set; }
         public DbSet<Drink> Drink { get; set; }
         public DbSet<UserEvent> UserEvent { get; set; }
+        public DbSet<RefreshToken> RefreshToken { get; set; }
 
         #endregion
     }

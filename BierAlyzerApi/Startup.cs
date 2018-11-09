@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BierAlyzerApi.Helper;
 using BierAlyzerApi.Models;
 using BierAlyzerApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -37,7 +38,7 @@ namespace BierAlyzerApi
             services
                 .AddMemoryCache()
                 .AddDbContext<BierAlyzerContext>(options => options.UseMySql(Configuration.GetConnectionString("Database")))
-                .AddTransient<BierAlyzerService>();
+                .AddTransient<AuthService>();
 
             services.AddMvc(options =>
                 {
@@ -75,8 +76,10 @@ namespace BierAlyzerApi
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
+                    ValidateLifetime = true,
                     ValidIssuer = jwtConfiguration.GetValue<string>("Issuer"),
                     ValidAudience = jwtConfiguration.GetValue<string>("Audience"),
+                    LifetimeValidator = AuthenticationHelper.ValidateLifetime,
                     IssuerSigningKey = secKey,
                 };
             });

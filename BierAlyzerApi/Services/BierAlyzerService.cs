@@ -24,32 +24,5 @@ namespace BierAlyzerApi.Services
             return contextEvents.ToList();
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Validate user credentials </summary>
-        ///
-        /// <remarks>   Andre Beging, 17.06.2018. </remarks>
-        ///
-        /// <param name="mail">     The mail. </param>
-        /// <param name="password"> The password. </param>
-        ///
-        /// <returns>   True if credentials are correct. False is not </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public Claim[] ValidateCredentials(string mail, string password)
-        {
-            var contextUser = _context.User.FirstOrDefault(x => x.Mail.Equals(mail, StringComparison.InvariantCultureIgnoreCase) && x.Enabled);
-            if (contextUser == null) return null;
-
-            var hash = AuthenticationHelper.CalculatePasswordHash(contextUser.Salt, password);
-
-            if (hash.Equals(contextUser.Hash, StringComparison.InvariantCulture))
-            {
-                return new[]
-                {
-                    new Claim(ClaimTypes.UserData, contextUser.UserId.ToString())
-                };
-            }
-
-            return null;
-        }
     }
 }

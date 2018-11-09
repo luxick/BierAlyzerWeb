@@ -1,15 +1,14 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using BierAlyzerApi.Models;
+using System.Threading.Tasks;
+using BierAlyzerApi.Helper;
 using BierAlyzerApi.Services;
+using Contracts.Communication.Token;
 using Contracts.Communication.Token.Request;
 using Contracts.Communication.Token.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace BierAlyzerApi.Controllers
@@ -18,22 +17,22 @@ namespace BierAlyzerApi.Controllers
     /// <inheritdoc />
     ///  <summary>   Manage API token </summary>
     ///  <remarks>   Andre Beging, 18.06.2018. </remarks>
-    [Route("api/auth")]
+    [Route("api/[controller]/[action]")]
     [AllowAnonymous]
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private readonly BierAlyzerService _service;
+        private readonly AuthService _authService;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Token controller. </summary>
         /// <remarks>   Andre Beging, 18.06.2018. </remarks>
-        /// <param name="service">          The service. </param>
+        /// <param name="authService"></param>
         /// <param name="configuration">    The configuration. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public AuthController(BierAlyzerService service, IConfiguration configuration)
+        public AuthController(AuthService authService, IConfiguration configuration)
         {
-            _service = service;
+            _authService = authService;
             _configuration = configuration;
         }
 
@@ -46,39 +45,94 @@ namespace BierAlyzerApi.Controllers
         [HttpPost]
         [SwaggerResponse(200, typeof(TokenResponse), "Fine, here is your token")]
         [SwaggerResponse(400, null, "Invalid data")]
-        [SwaggerResponse(401, null, "Incorrect credentials")]
-        public IActionResult Post([FromBody] TokenRequest request)
+        [SwaggerResponse(500, null, "Token creation problem")]
+        public IActionResult Token([FromBody] TokenRequest request)
         {
             if (request == null) return BadRequest("Invalid data");
-            var userClaims = _service.ValidateCredentials(request.Mail, request.Password);
+            var userClaims = _authService.ValidateCredentials(request.Mail, request.Password);
 
             if (userClaims != null)
             {
-                var jwtConfiguration = _configuration.GetSection("Jwt");
-                var secret = jwtConfiguration.GetValue<string>("Key");
-                var issuer = jwtConfiguration.GetValue<string>("Issuer");
-                var audience = jwtConfiguration.GetValue<string>("Audience");
+                // Create tokens
+                var token = AuthenticationHelper.GenerateAccessToken(_configuration, userClaims);
+                var refreshToken = AuthenticationHelper.GenerateRefreshToken(_configuration, userClaims);
 
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
-                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                if (token == null) return StatusCode(500);
+                if (refreshToken == null) return StatusCode(500);
 
-                var expireDate = DateTime.Now.AddMinutes(10);
+                // Store refresh token
+                var successfullyStored = _authService.StoreRefreshToken(refreshToken);
+                if (!successfullyStored) return StatusCode(500);
 
-                var token = new JwtSecurityToken(
-                    audience: audience,
-                    issuer: issuer,
-                    claims: userClaims,
-                    expires: expireDate,
-                    signingCredentials: creds);
-
-                return Ok(new
+                return Ok(new TokenResponse
                 {
-                    Token = new JwtSecurityTokenHandler().WriteToken(token),
-                    Expires = expireDate
+                    AccessToken = new TokenResource
+                    {
+                        Token = new JwtSecurityTokenHandler().WriteToken(token),
+                        Expires = token.ValidTo
+                    },
+                    RefreshToken = new TokenResource
+                    {
+                        Token = new JwtSecurityTokenHandler().WriteToken(refreshToken),
+                        Expires = refreshToken.ValidTo
+                    }
                 });
             }
 
-            return Unauthorized();
+            return BadRequest();
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Lets the user get a new pair of tokens </summary>
+        /// <remarks>   Andre Beging, 09.11.2018. </remarks>
+        /// <param name="refreshToken"> The refresh token. </param>
+        /// <returns>   An IActionResult. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        [HttpPost]
+        [SwaggerResponse(200, typeof(TokenResponse), "Fine, here is your token")]
+        [SwaggerResponse(400, null, "Invalid data")]
+        [SwaggerResponse(401, null, "Refresh token expired")]
+        public IActionResult Refresh([FromBody] string refreshToken)
+        {
+            try
+            {
+                var securityToken = new JwtSecurityToken(refreshToken);
+                // TODO Full token validation
+                if (!AuthenticationHelper.ValidateLifetime(null, securityToken.ValidTo, null, null))
+                    return Unauthorized();
+
+                var userClaims = _authService.ValidateRefreshToken(securityToken);
+                if (userClaims == null) return Unauthorized();
+
+                // Create new tokens
+                var newToken = AuthenticationHelper.GenerateAccessToken(_configuration, userClaims);
+                var newRefreshToken = AuthenticationHelper.GenerateRefreshToken(_configuration, userClaims);
+
+                if (newToken == null) return StatusCode(500);
+                if (newRefreshToken == null) return StatusCode(500);
+
+                // Store new refresh token
+                var successfullyStored = _authService.StoreRefreshToken(newRefreshToken);
+                if (!successfullyStored) return StatusCode(500);
+
+                return Ok(new TokenResponse
+                {
+                    AccessToken = new TokenResource
+                    {
+                        Token = new JwtSecurityTokenHandler().WriteToken(newToken),
+                        Expires = newToken.ValidTo
+                    },
+                    RefreshToken = new TokenResource
+                    {
+                        Token = new JwtSecurityTokenHandler().WriteToken(newRefreshToken),
+                        Expires = newRefreshToken.ValidTo
+                    }
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
     }
 }
