@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Net;
 using BierAlyzerApi.Services;
 using Contracts.Communication.Event;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -45,6 +47,11 @@ namespace BierAlyzerApi.Controllers
             {
                 Events = events
             });
+        }
+
+        public IActionResult Get(Guid eventId)
+        {
+            return Ok();
         }
     }
 }

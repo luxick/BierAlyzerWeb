@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using BierAlyzerApi.Helper;
 using BierAlyzerApi.Models;
 using Contracts.Model;
@@ -18,7 +19,7 @@ namespace BierAlyzerApi.Services
 
         public List<Event> GetEvents(Guid userId)
         {
-            var contextEvents = _context.Event.Where(e => e.EventUsers.Any(eu => eu.UserId == userId) && e.Type != EventType.Hidden);
+            var contextEvents = _context.Event.Where(e => /*e.EventUsers.Any(eu => eu.UserId == userId) &&*/ e.Type != EventType.Hidden);
 
             return contextEvents.ToList();
         }
@@ -33,17 +34,22 @@ namespace BierAlyzerApi.Services
         ///
         /// <returns>   True if credentials are correct. False is not </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public bool ValidateCredentials(string mail, string password)
+        public Claim[] ValidateCredentials(string mail, string password)
         {
             var contextUser = _context.User.FirstOrDefault(x => x.Mail.Equals(mail, StringComparison.InvariantCultureIgnoreCase) && x.Enabled);
-            if (contextUser == null) return false;
+            if (contextUser == null) return null;
 
             var hash = AuthenticationHelper.CalculatePasswordHash(contextUser.Salt, password);
 
             if (hash.Equals(contextUser.Hash, StringComparison.InvariantCulture))
-                return true;
+            {
+                return new[]
+                {
+                    new Claim(ClaimTypes.UserData, contextUser.UserId.ToString())
+                };
+            }
 
-            return false;
+            return null;
         }
     }
 }

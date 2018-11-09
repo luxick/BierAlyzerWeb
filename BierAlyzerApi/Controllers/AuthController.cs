@@ -18,52 +18,46 @@ namespace BierAlyzerApi.Controllers
     /// <inheritdoc />
     ///  <summary>   Manage API token </summary>
     ///  <remarks>   Andre Beging, 18.06.2018. </remarks>
-    [Route("api/token")]
-    public class TokenController : ControllerBase
+    [Route("api/auth")]
+    [AllowAnonymous]
+    public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;
         private readonly BierAlyzerService _service;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Token controller </summary>
-        ///
+        /// <summary>   Token controller. </summary>
         /// <remarks>   Andre Beging, 18.06.2018. </remarks>
-        ///
         /// <param name="service">          The service. </param>
         /// <param name="configuration">    The configuration. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public TokenController(BierAlyzerService service, IConfiguration configuration)
+        public AuthController(BierAlyzerService service, IConfiguration configuration)
         {
             _service = service;
             _configuration = configuration;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Get API Token </summary>
-        ///
+        /// <summary>   Get API Token. </summary>
         /// <remarks>   Andre Beging, 18.06.2018. </remarks>
-        ///
-        /// <param name="request">  TokenRequest </param>
-        ///
+        /// <param name="request">  TokenRequest. </param>
         /// <returns>   Result. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        [AllowAnonymous]
         [HttpPost]
         [SwaggerResponse(200, typeof(TokenResponse), "Fine, here is your token")]
+        [SwaggerResponse(400, null, "Invalid data")]
         [SwaggerResponse(401, null, "Incorrect credentials")]
         public IActionResult Post([FromBody] TokenRequest request)
         {
-            var credentialsCorrect = _service.ValidateCredentials(request.Mail, request.Password);
+            if (request == null) return BadRequest("Invalid data");
+            var userClaims = _service.ValidateCredentials(request.Mail, request.Password);
 
-            if (credentialsCorrect)
+            if (userClaims != null)
             {
-                var claims = new[]
-                {
-                    new Claim(ClaimTypes.Name, "asdasdasd")
-                };
-
                 var jwtConfiguration = _configuration.GetSection("Jwt");
                 var secret = jwtConfiguration.GetValue<string>("Key");
+                var issuer = jwtConfiguration.GetValue<string>("Issuer");
+                var audience = jwtConfiguration.GetValue<string>("Audience");
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -71,14 +65,15 @@ namespace BierAlyzerApi.Controllers
                 var expireDate = DateTime.Now.AddMinutes(10);
 
                 var token = new JwtSecurityToken(
-                    claims: claims,
+                    audience: audience,
+                    issuer: issuer,
+                    claims: userClaims,
                     expires: expireDate,
                     signingCredentials: creds);
 
-                return Ok(new TokenResponse
+                return Ok(new
                 {
                     Token = new JwtSecurityTokenHandler().WriteToken(token),
-
                     Expires = expireDate
                 });
             }
