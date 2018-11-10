@@ -6,13 +6,29 @@ using Contracts.Communication.Auth.Request;
 
 namespace BierAlyzerApiClient
 {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>   The BierAlyzer client. </summary>
+    /// <remarks>   Andre Beging, 10.11.2018. </remarks>
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     public class BierAlyzerClient : IDisposable
     {
+        #region Private Properties
+
         private HttpClient Client { get; }
 
-        private string _accessToken;
+        #endregion
+
+        #region Public Properties
+
+        #region Api Controllers
 
         public AuthController AuthController { get; set; }
+
+        #endregion
+
+        #region AccessToken
+
+        private string _accessToken;
 
         public string AccessToken
         {
@@ -26,8 +42,21 @@ namespace BierAlyzerApiClient
             }
         }
 
+        #endregion
+
         public string RefreshToken { get; set; }
 
+        #endregion
+
+        #region Constructors
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Constructor. </summary>
+        /// <remarks>   Andre Beging, 10.11.2018. </remarks>
+        /// <param name="serverAddress">    The server address. </param>
+        /// <param name="accessToken">      (Optional) The access token. </param>
+        /// <param name="refreshToken">     (Optional) The refresh token. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         public BierAlyzerClient(Uri serverAddress, string accessToken = null, string refreshToken = null)
         {
             Client = new HttpClient { BaseAddress = serverAddress };
@@ -49,6 +78,17 @@ namespace BierAlyzerApiClient
             AuthController = new AuthController(Client);
         }
 
+        #endregion
+
+        #region SignIn
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Sign in method </summary>
+        /// <remarks>   Andre Beging, 10.11.2018. </remarks>
+        /// <param name="mailAddress">  The mail address. </param>
+        /// <param name="password">     The password. </param>
+        /// <returns>   True if it succeeds, false if it fails. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         public bool SignIn(string mailAddress, string password)
         {
             var tokenRequest = new TokenRequest
@@ -58,8 +98,21 @@ namespace BierAlyzerApiClient
             };
 
             var result = AuthController.Token(tokenRequest);
-            return true;
+
+            if (result != null)
+            {
+                AccessToken = result.AccessToken.Token;
+                RefreshToken = result.RefreshToken.Token;
+
+                return true;
+            }
+
+            return false;
         }
+
+        #endregion
+
+        #region Dispose
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>
@@ -72,5 +125,7 @@ namespace BierAlyzerApiClient
         {
             Client?.Dispose();
         }
+
+        #endregion
     }
 }

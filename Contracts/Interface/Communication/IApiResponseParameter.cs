@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Contracts.Interface.Communication
+﻿namespace Contracts.Interface.Communication
 {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>   Interface for API response parameter. </summary>
+    /// <remarks>   Andre Beging, 10.11.2018. </remarks>
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     public interface IApiResponseParameter
     {
     }
