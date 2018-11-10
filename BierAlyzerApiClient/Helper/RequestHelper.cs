@@ -1,50 +1,47 @@
-﻿using System;
-using System.IO;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Runtime.Serialization;
+using BierAlyzerApiClient.Extensions;
 using Contracts.Interface.Communication;
-using ProtoBuf;
 
 namespace BierAlyzerApiClient.Helper
 {
     public class RequestHelper
     {
-        public static bool PostToApiController(HttpClient client, string apiController, string methodName, IApiRequestParameter parameter)
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Send a POST request to the API </summary>
+        /// <remarks>   Andre Beging, 10.11.2018. </remarks>
+        /// <typeparam name="T">    Generic type parameter (Response Parameter). </typeparam>
+        /// <param name="client">           The client. </param>
+        /// <param name="apiController">    The API controller. </param>
+        /// <param name="methodName">       Name of the method. </param>
+        /// <param name="parameter">        The parameter. </param>
+        /// <returns>   An Request Parameter. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public static T ApiControllerPost<T>(HttpClient client, string apiController, string methodName, IApiRequestParameter parameter) where T : class, IApiResponseParameter
         {
             var targetAddress = $"{apiController}/{methodName}";
-            var response = client.PostAsync(targetAddress, SerializeForPost(parameter));
+            var response = client.PostAsync(targetAddress, SerializeForRequest(parameter)).Result;
 
-            if (response.IsCompletedSuccessfully)
+            if (!response.IsSuccessStatusCode)
             {
-                return true;
+                return null;
             }
 
-            return false;
+            var rawBytes = response.Content.ReadAsByteArrayAsync().Result;
+            return rawBytes.ProtoDeserialize<T>();
         }
 
-        private static ByteArrayContent SerializeForPost(IApiRequestParameter parameter)
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Serialize the data via ProtoBuf for an HTTP request </summary>
+        /// <remarks>   Andre Beging, 10.11.2018. </remarks>
+        /// <param name="parameter">    The parameter. </param>
+        /// <returns>   A ByteArrayContent. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        private static ByteArrayContent SerializeForRequest(IApiRequestParameter parameter)
         {
-            var byteArrayContent = new ByteArrayContent(ProtoSerialize(parameter));
+            var byteArrayContent = new ByteArrayContent(parameter.ProtoSerialize());
             byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue("application/x-protobuf");
             return byteArrayContent;
-        }
-
-        private static byte[] ProtoSerialize(IApiRequestParameter parameter)
-        {
-            if (null == parameter) return null;
-            try
-            {
-                using (var stream = new MemoryStream())
-                {
-                    Serializer.Serialize(stream, parameter);
-                    return stream.ToArray();
-                }
-            }
-            catch (Exception e)
-            {
-                throw new SerializationException($"Error while serializing {parameter}: {e}");
-            }
         }
     }
 }

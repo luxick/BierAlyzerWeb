@@ -2,9 +2,9 @@
 using System.IdentityModel.Tokens.Jwt;
 using BierAlyzerApi.Helper;
 using BierAlyzerApi.Services;
-using Contracts.Communication.Token;
-using Contracts.Communication.Token.Request;
-using Contracts.Communication.Token.Response;
+using Contracts.Communication.Auth;
+using Contracts.Communication.Auth.Request;
+using Contracts.Communication.Auth.Response;
 using Contracts.Interface.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

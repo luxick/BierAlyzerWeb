@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Contracts.Interface.Communication;
+﻿using Contracts.Interface.Communication;
 
-namespace Contracts.Communication.Token.Request
+namespace Contracts.Communication.Auth.Request
 {
     public class RefreshTokenRequest : IApiRequestParameter
     {

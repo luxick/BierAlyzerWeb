@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using BierAlyzerApi.Helper;
 using BierAlyzerApi.Models;
 using BierAlyzerApi.Services;
@@ -11,28 +6,45 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
+using WebApiContrib.Core.Formatter.Protobuf;
 
 namespace BierAlyzerApi
 {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>   Startup configuration class </summary>
+    /// <remarks>   Andre Beging, 10.11.2018. </remarks>
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     public class Startup
     {
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Constructor. </summary>
+        /// <remarks>   Andre Beging, 10.11.2018. </remarks>
+        /// <param name="configuration">    The currently used configuration. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   The currently used configuration. </summary>
+        /// <value> The configuration. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
+        /// <remarks>   Andre Beging, 10.11.2018. </remarks>
+        /// <param name="services"> The services. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         public void ConfigureServices(IServiceCollection services)
         {
             services
@@ -48,7 +60,8 @@ namespace BierAlyzerApi
                         .Build();
                     options.Filters.Add(new AuthorizeFilter(policy));
                 })
-                .AddXmlDataContractSerializerFormatters();
+                .AddXmlDataContractSerializerFormatters()
+                .AddProtobufFormatters();
             //.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSwaggerGen(c =>
@@ -87,7 +100,15 @@ namespace BierAlyzerApi
             services.AddSingleton(Configuration);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request
+        /// pipeline.
+        /// </summary>
+        /// <remarks>   Andre Beging, 10.11.2018. </remarks>
+        /// <param name="app">  The application. </param>
+        /// <param name="env">  The environment. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())

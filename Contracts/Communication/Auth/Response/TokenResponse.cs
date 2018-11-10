@@ -1,11 +1,15 @@
-﻿using System;
+﻿using Contracts.Interface.Communication;
+using ProtoBuf;
 
-namespace Contracts.Communication.Token.Response
+namespace Contracts.Communication.Auth.Response
 {
-    public class TokenResponse
+    [ProtoContract]
+    public class TokenResponse : IApiResponseParameter
     {
+        [ProtoMember(1)]
         public TokenResource AccessToken { get; set; }
 
+        [ProtoMember(2)]
         public TokenResource RefreshToken { get; set; }
     }
 }

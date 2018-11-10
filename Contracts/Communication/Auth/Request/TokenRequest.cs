@@ -1,7 +1,9 @@
 ﻿using Contracts.Interface.Communication;
+using ProtoBuf;
 
-namespace Contracts.Communication.Token.Request
+namespace Contracts.Communication.Auth.Request
 {
+    [ProtoContract]
     public class TokenRequest : IApiRequestParameter
     {
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -9,6 +11,7 @@ namespace Contracts.Communication.Token.Request
         ///
         /// <value> The mail. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+        [ProtoMember(1)]
         public string Mail { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -16,6 +19,7 @@ namespace Contracts.Communication.Token.Request
         ///
         /// <value> The password. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+        [ProtoMember(2)]
         public string Password { get; set; }
     }
 }

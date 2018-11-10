@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using BierAlyzerApiClient.Service;
-using Contracts.Communication.Token.Request;
+using Contracts.Communication.Auth.Request;
 
 namespace BierAlyzerApiClient
 {
@@ -21,6 +21,7 @@ namespace BierAlyzerApiClient
             {
                 _accessToken = value;
                 Client.DefaultRequestHeaders.Clear();
+                Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-protobuf"));
                 Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", value);
             }
         }
@@ -42,12 +43,13 @@ namespace BierAlyzerApiClient
             else
             {
                 Client.DefaultRequestHeaders.Clear();
+                Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-protobuf"));
             }
 
             AuthController = new AuthController(Client);
         }
 
-        public void SignIn(string mailAddress, string password)
+        public bool SignIn(string mailAddress, string password)
         {
             var tokenRequest = new TokenRequest
             {
@@ -56,6 +58,7 @@ namespace BierAlyzerApiClient
             };
 
             var result = AuthController.Token(tokenRequest);
+            return true;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////

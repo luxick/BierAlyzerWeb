@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using BierAlyzerApiClient;
 using BierAlyzerWeb.Helper;
 using BierAlyzerWeb.Models.Account;
 using Contracts.Model;
@@ -51,9 +52,6 @@ namespace BierAlyzerWeb.Controllers
 
                     HttpContext.Session.SetObject("User", user);
                     return RedirectToAction("Events", "Home");
-
-                    ViewData["Success"] = true;
-                    ModelState.Clear();
                 }
 
             return View(model);
@@ -87,6 +85,11 @@ namespace BierAlyzerWeb.Controllers
         [HttpPost]
         public IActionResult Login(LoginModel model)
         {
+            using (var client = new BierAlyzerClient(new Uri("http://localhost:5001/api/")))
+            {
+                var result = client.SignIn("bier@troogs.de", "enemenemiste");
+            }
+
             if (ModelState.IsValid)
                 // Check credentials
                 if (AuthenticationHelper.LoginCorrect(model.Mail, model.Password, out var user) && user != null)

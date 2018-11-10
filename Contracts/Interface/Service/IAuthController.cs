@@ -1,4 +1,4 @@
-﻿using Contracts.Communication.Token.Request;
+﻿using Contracts.Communication.Auth.Request;
 
 namespace Contracts.Interface.Service
 {
