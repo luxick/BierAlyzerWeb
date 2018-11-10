@@ -4,7 +4,6 @@ using BierAlyzerWeb.Helper;
 using Contracts.Model;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 
 namespace BierAlyzerWeb
 {
@@ -45,8 +44,6 @@ namespace BierAlyzerWeb
 
                 #endregion
             }
-
-
 
             BuildWebHost(args).Run();
         }
