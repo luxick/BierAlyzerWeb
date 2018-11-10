@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Threading.Tasks;
 using BierAlyzerApi.Helper;
 using BierAlyzerApi.Services;
 using Contracts.Communication.Token;
 using Contracts.Communication.Token.Request;
 using Contracts.Communication.Token.Response;
+using Contracts.Interface.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -17,15 +17,15 @@ namespace BierAlyzerApi.Controllers
     /// <inheritdoc />
     ///  <summary>   Manage API token </summary>
     ///  <remarks>   Andre Beging, 18.06.2018. </remarks>
-    [Route("api/[controller]/[action]")]
+    [Route("api/auth/[action]")]
     [AllowAnonymous]
-    public class AuthController : ControllerBase
+    public class AuthController : ControllerBase, IAuthController<IActionResult>
     {
         private readonly IConfiguration _configuration;
         private readonly AuthService _authService;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Token controller. </summary>
+        /// <summary>   Token controller </summary>
         /// <remarks>   Andre Beging, 18.06.2018. </remarks>
         /// <param name="authService"></param>
         /// <param name="configuration">    The configuration. </param>
@@ -37,7 +37,7 @@ namespace BierAlyzerApi.Controllers
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Get API Token. </summary>
+        /// <summary>   Get an API token pair </summary>
         /// <remarks>   Andre Beging, 18.06.2018. </remarks>
         /// <param name="request">  TokenRequest. </param>
         /// <returns>   Result. </returns>
@@ -83,7 +83,7 @@ namespace BierAlyzerApi.Controllers
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Lets the user get a new pair of tokens </summary>
+        /// <summary>   Get a new pair of tokens using a refresh token </summary>
         /// <remarks>   Andre Beging, 09.11.2018. </remarks>
         /// <param name="refreshToken"> The refresh token. </param>
         /// <returns>   An IActionResult. </returns>
@@ -92,11 +92,11 @@ namespace BierAlyzerApi.Controllers
         [SwaggerResponse(200, typeof(TokenResponse), "Fine, here is your token")]
         [SwaggerResponse(400, null, "Invalid data")]
         [SwaggerResponse(401, null, "Refresh token expired")]
-        public IActionResult Refresh([FromBody] string refreshToken)
+        public IActionResult Refresh([FromBody] RefreshTokenRequest refreshToken)
         {
             try
             {
-                var securityToken = new JwtSecurityToken(refreshToken);
+                var securityToken = new JwtSecurityToken(refreshToken.RefreshToken);
                 // TODO Full token validation
                 if (!AuthenticationHelper.ValidateLifetime(null, securityToken.ValidTo, null, null))
                     return Unauthorized();

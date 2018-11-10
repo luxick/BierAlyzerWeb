@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Net;
 using BierAlyzerApi.Services;
 using Contracts.Communication.Event;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace BierAlyzerApi.Controllers
 {
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// <summary>   Manage Events </summary>
+    /// <summary>   Manage events </summary>
     ///
     /// <remarks>   Andre Beging, 18.06.2018. </remarks>
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    [Route("api/events")]
-    public class EventsController : ControllerBase
+    [Route("api/event")]
+    public class EventController : ControllerBase
     {
         private readonly BierAlyzerService _service;
 
@@ -25,7 +23,7 @@ namespace BierAlyzerApi.Controllers
         ///
         /// <param name="service">  The service. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public EventsController(BierAlyzerService service)
+        public EventController(BierAlyzerService service)
         {
             _service = service;
         }
@@ -47,11 +45,6 @@ namespace BierAlyzerApi.Controllers
             {
                 Events = events
             });
-        }
-
-        public IActionResult Get(Guid eventId)
-        {
-            return Ok();
         }
     }
 }
