@@ -1,6 +1,8 @@
-﻿namespace Contracts.Communication.Token.Request
+﻿using Contracts.Interface.Communication;
+
+namespace Contracts.Communication.Token.Request
 {
-    public class TokenRequest
+    public class TokenRequest : IApiRequestParameter
     {
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Mail Address </summary>
