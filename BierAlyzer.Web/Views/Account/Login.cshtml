@@ -1,0 +1,50 @@
+﻿@model BierAlyzer.Web.Models.Account.LoginModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+@if (ViewData["ErrorStatus"] != null && bool.TryParse(ViewData["ErrorStatus"].ToString(), out bool error) && error)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+
+<form asp-action="Login">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row" style="text-align: center">
+        <div class="col-md-2"></div>
+        <div class="col-12 col-sm-6 col-md-4 text-left" style="padding: 5px 15px;">
+            <div class="form-group">
+                <label asp-for="Mail" class="bmd-label-static">E-Mail</label>
+                <environment include="Development">
+                    <input asp-for="Mail" class="form-control" style="width: 100%;" value="bier@troogs.de" />
+                </environment>
+                <environment exclude="Development">
+                    <input asp-for="Mail" class="form-control" style="width: 100%;" />
+                </environment>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 text-left" style="padding: 5px 15px;">
+            <div class="form-group">
+                <label asp-for="Password" class="bmd-label-static">Passwort</label>
+                <environment include="Development">
+                    <input asp-for="Password" class="form-control" style="width: 100%;" type="password" value="enemenemiste" />
+                </environment>
+                <environment exclude="Development">
+                    <input asp-for="Password" class="form-control" style="width: 100%;" type="password" value="" />
+                </environment>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 15px;">
+        <div class="col-md-2"></div>
+        <div class="col-6 col-md-4 text-center">
+            <a class="btn btn-sm btn-default" style="width: 100%; color: #000;" href="/signup">Registrieren</a>
+        </div>
+        <div class="col-6 col-md-4 text-center">
+            <button class="btn btn-sm btn-default" style="width: 100%;">Login</button>
+        </div>
+    </div>
+</form>

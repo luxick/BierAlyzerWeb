@@ -1,0 +1,20 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Collections" #>
+<#@ assembly name="System.Reflection" #>
+<#@ assembly name="$(SolutionDir)\BierAlyzer.EntityModel\bin\Debug\netcoreapp2.1\BierAlyzer.EntityModel.dll"#>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="BierAlyzer.EntityModel" #>
+<#@ import namespace="System.Reflection" #>
+<#@ output extension=".cs" #>
+
+<#
+var entityClasses = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).Where(t => t.IsClass && !string.IsNullOrWhiteSpace(t.Namespace) && t.Namespace == "BierAlyzer.EntityModel");
+
+foreach(Type entityClass in entityClasses) {
+        #><#= entityClass.Name #><#
+}
+#>
