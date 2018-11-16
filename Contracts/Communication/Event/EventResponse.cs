@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Contracts.Communication.Event
 {
-    public class EventsResponse
+    public class EventResponse
     {
         public int EventCount => Events.Count;
 
