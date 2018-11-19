@@ -20,8 +20,6 @@ namespace BierAlyzer.Api
             // ReSharper disable once AssignNullToNotNullAttribute
             using (var context = factory.CreateDbContext(null))
             {
-                
-
                 var defaultAdminMail = "bier@troogs.de";
 
                 var adminUser = context.User.FirstOrDefault(u => u.Mail.ToLower() == defaultAdminMail);
@@ -48,8 +46,6 @@ namespace BierAlyzer.Api
                 }
 
                 context.SaveChanges();
-
-                
             }
 
             #endregion
@@ -69,6 +65,12 @@ namespace BierAlyzer.Api
             }
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Creates web host builder. </summary>
+        /// <remarks>   Andre Beging, 17.11.2018. </remarks>
+        /// <param name="args"> The arguments. </param>
+        /// <returns>   The new web host builder. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseUrls("http://*:5001")

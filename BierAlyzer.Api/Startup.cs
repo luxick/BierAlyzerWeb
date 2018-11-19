@@ -1,7 +1,8 @@
 ﻿using System.Text;
+using AutoMapper;
+using BierAlyzer.Api.Helper;
 using BierAlyzer.Api.Models;
 using BierAlyzer.Api.Services;
-using BierAlyzerApi.Helper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -52,6 +53,8 @@ namespace BierAlyzer.Api
                 .AddDbContext<BierAlyzerContext>(options => options.UseMySql(Configuration.GetConnectionString("Database")))
                 .AddTransient<AuthService>()
                 .AddTransient<EventService>();
+
+            services.AddAutoMapper();
 
             services.AddMvc(options =>
                 {

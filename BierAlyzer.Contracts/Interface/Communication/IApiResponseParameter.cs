@@ -1,4 +1,6 @@
-﻿namespace BierAlyzer.Contracts.Interface.Communication
+﻿using BierAlyzer.Contracts.Model;
+
+namespace BierAlyzer.Contracts.Interface.Communication
 {
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     /// <summary>   Interface for API response parameter. </summary>
@@ -6,5 +8,6 @@
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     public interface IApiResponseParameter
     {
+        RequestResult Result { get; set; }
     }
 }

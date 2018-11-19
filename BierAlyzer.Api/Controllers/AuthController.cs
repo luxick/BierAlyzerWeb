@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using AutoMapper;
+using BierAlyzer.Api.Helper;
 using BierAlyzer.Api.Services;
 using BierAlyzer.Contracts.Communication.Auth;
 using BierAlyzer.Contracts.Communication.Auth.Request;
 using BierAlyzer.Contracts.Communication.Auth.Response;
 using BierAlyzer.Contracts.Interface.Service;
-using BierAlyzerApi.Helper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;

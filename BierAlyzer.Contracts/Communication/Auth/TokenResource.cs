@@ -6,10 +6,10 @@ namespace BierAlyzer.Contracts.Communication.Auth
     [ProtoContract]
     public class TokenResource
     {
-        [ProtoMember(1)]
+        [ProtoMember(10)]
         public string Token { get; set; }
 
-        [ProtoMember(2)]
+        [ProtoMember(20)]
         public DateTime Expires { get; set; }
     }
 }

@@ -6,7 +6,7 @@ namespace BierAlyzer.Contracts.Communication.Auth.Request
     [ProtoContract]
     public class RefreshTokenRequest : IApiRequestParameter
     {
-        [ProtoMember(1)]
+        [ProtoMember(10)]
         public string RefreshToken { get; set; }
     }
 }

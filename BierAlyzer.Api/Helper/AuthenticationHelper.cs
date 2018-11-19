@@ -6,7 +6,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BierAlyzerApi.Helper
+namespace BierAlyzer.Api.Helper
 {
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     /// <summary>   An authentication helper. </summary>
@@ -136,20 +136,19 @@ namespace BierAlyzerApi.Helper
             var jwtConfiguration = configuration.GetSection("Jwt");
 
             int lifeTime;
-            DateTime expireDate;
             switch (type)
             {
                 case GenerateTokenType.Access:
                     lifeTime = jwtConfiguration.GetValue<int>("TokenLifetime");
-                    expireDate = DateTime.UtcNow.AddSeconds(lifeTime);
                     break;
                 case GenerateTokenType.Refresh:
                     lifeTime = jwtConfiguration.GetValue<int>("RefreshTokenLifetime");
-                    expireDate = DateTime.UtcNow.AddMinutes(lifeTime);
                     break;
                 default:
                     return null;
             }
+
+            var expireDate = DateTime.UtcNow.AddSeconds(lifeTime);
 
             var issuer = jwtConfiguration.GetValue<string>("Issuer");
             var audience = jwtConfiguration.GetValue<string>("Audience");

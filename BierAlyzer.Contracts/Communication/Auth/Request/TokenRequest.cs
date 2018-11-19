@@ -11,7 +11,7 @@ namespace BierAlyzer.Contracts.Communication.Auth.Request
         ///
         /// <value> The mail. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        [ProtoMember(1)]
+        [ProtoMember(10)]
         public string Mail { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@ namespace BierAlyzer.Contracts.Communication.Auth.Request
         ///
         /// <value> The password. </value>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        [ProtoMember(2)]
+        [ProtoMember(20)]
         public string Password { get; set; }
     }
 }

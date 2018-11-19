@@ -2,9 +2,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using AutoMapper;
+using BierAlyzer.Api.Helper;
 using BierAlyzer.Api.Models;
+using BierAlyzer.Contracts.Model;
 using BierAlyzer.EntityModel;
-using BierAlyzerApi.Helper;
 
 namespace BierAlyzer.Api.Services
 {
@@ -16,10 +18,11 @@ namespace BierAlyzer.Api.Services
     {
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Constructor. </summary>
-        /// <remarks>   Andre Beging, 10.11.2018. </remarks>
+        /// <remarks>   Andre Beging, 18.11.2018. </remarks>
         /// <param name="context">  The context. </param>
+        /// <param name="mapper">   The mapper. </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public AuthService(BierAlyzerContext context) : base(context)
+        public AuthService(BierAlyzerContext context, IMapper mapper) : base(context, mapper)
         {
         }
 
@@ -46,8 +49,9 @@ namespace BierAlyzer.Api.Services
             {
                 return new[]
                 {
-                    new Claim(ClaimTypes.UserData, contextUser.UserId.ToString()),
-                    new Claim(ClaimTypes.Locality, "de-DE")
+                    new Claim(BierAlyzerClaim.UserId, contextUser.UserId.ToString()),
+                    new Claim(BierAlyzerClaim.Language, "de-DE"),
+                    new Claim(BierAlyzerClaim.UserType, contextUser.Type.ToString())
                 };
             }
 
@@ -66,7 +70,7 @@ namespace BierAlyzer.Api.Services
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public Claim[] ValidateRefreshToken(JwtSecurityToken refreshToken)
         {
-            var userIdString = refreshToken?.Claims?.First(x => x.Type == ClaimTypes.UserData).Value;
+            var userIdString = refreshToken?.Claims?.First(x => x.Type == BierAlyzerClaim.UserId).Value;
             var userId = Guid.Parse(userIdString);
             if (userId == Guid.Empty) return null;
 
@@ -86,8 +90,9 @@ namespace BierAlyzer.Api.Services
 
             return new[]
             {
-                new Claim(ClaimTypes.UserData, userId.ToString()),
-                new Claim(ClaimTypes.Locality, "de-DE")
+                new Claim(BierAlyzerClaim.UserId, user.UserId.ToString()),
+                new Claim(BierAlyzerClaim.UserType, user.Type.ToString()), 
+                new Claim(BierAlyzerClaim.Language, "de-DE")
             };
         }
 
@@ -104,11 +109,9 @@ namespace BierAlyzer.Api.Services
         {
             // Validate token existence
             if (refreshToken == null) return false;
-            if (refreshToken.Claims.All(x => x.Type != ClaimTypes.UserData)) return false;
+            if (!refreshToken.Claims.TryGetValue<Guid>(BierAlyzerClaim.UserId, out var userId)) return false;
 
-            var userIdString = refreshToken.Claims.First(x => x.Type == ClaimTypes.UserData).Value;
-
-            if (Guid.TryParse(userIdString, out var userId))
+            if (userId != Guid.Empty)
             {
                 // Validate existing userId
                 if (!Context.User.Any(u => u.UserId == userId)) return false;

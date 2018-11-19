@@ -1,6 +1,6 @@
-﻿using BierAlyzer.Api.Models;
+﻿using AutoMapper;
 
-namespace BierAlyzer.Api.Services
+namespace BierAlyzer.Api.Models
 {
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     /// <summary>   A bier alyzer service base. </summary>
@@ -8,17 +8,22 @@ namespace BierAlyzer.Api.Services
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     public class BierAlyzerServiceBase
     {
-        /// <summary>   The context. </summary>
+        /// <summary>   Database context </summary>
         protected readonly BierAlyzerContext Context;
+
+        /// <summary>   Automapper </summary>
+        protected readonly IMapper Mapper;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Constructor. </summary>
         /// <remarks>   Andre Beging, 10.11.2018. </remarks>
-        /// <param name="context">  The context. </param>
+        /// <param name="context">  Database context </param>
+        /// <param name="mapper">   Automapper </param>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public BierAlyzerServiceBase(BierAlyzerContext context)
+        public BierAlyzerServiceBase(BierAlyzerContext context, IMapper mapper)
         {
             Context = context;
+            Mapper = mapper;
         }
     }
 }
