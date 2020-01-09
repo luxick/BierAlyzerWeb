@@ -1,0 +1,23 @@
+﻿@using BierAlyzer.Contracts.Model
+@model BierAlyzer.EntityModel.User
+
+@if (Model != null && Model.Type == UserType.Admin)
+{
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col">
+            <a asp-controller="Management" asp-action="Events" class="btn btn-sm btn-outline-danger" style="width: 100%;" title="Events verwalten">
+                <i class="fas fa-calendar-alt"></i>
+            </a>
+        </div>
+        <div class="col">
+            <a asp-controller="Management" asp-action="Drinks" class="btn btn-sm btn-outline-danger" style="width: 100%;" title="Getränke verwalten">
+                <i class="fas fa-beer"></i>
+            </a>
+        </div>
+        <div class="col">
+            <a asp-controller="Management" asp-action="Users" class="btn btn-sm btn-outline-danger" style="width: 100%;" title="User verwalten">
+                <i class="fas fa-users"></i>
+            </a>
+        </div>
+    </div>
+}

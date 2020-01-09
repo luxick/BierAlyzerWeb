@@ -1,0 +1,224 @@
+﻿@using System.Globalization
+@using BierAlyzer.Contracts.Model
+@model BierAlyzer.Web.Models.Home.EventModel
+
+@{
+    ViewData["Title"] = Model.Event.Name;
+}
+
+<div class="row">
+
+    <div class="col-8">
+        <button class="btn btn-sm btn-default" style="width: 30px;" title="Event Info" data-toggle="modal" data-target="#descriptionModal">
+            <i class="fas fa-info"></i>
+        </button>
+        <button class="btn btn-sm btn-default" style="width: 30px;" title="Event verlassen" data-toggle="modal" data-target="#leaveEventModal">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+        <button class="btn btn-sm btn-default" style="width: 30px;" title="Event Statistik" data-toggle="modal" data-target="#statsModal">
+            <i class="fas fa-chart-pie"></i>
+        </button>
+    </div>
+    <div class="col-4">
+        @if (Model.Event.Status == EventStatus.Open)
+        {
+            <button class="btn btn-lg " style="width: 100%;" data-toggle="modal" data-target="#addEntryModal" title="Buchen">
+                <i class="fas fa-beer"></i>
+            </button>
+        }
+        else
+        {
+            <button class="btn btn-lg disabled" style="width: 100%;" title="Buchen">
+                <i class="fas fa-beer"></i>
+            </button>
+        }
+    </div>
+</div>
+
+<h4>
+    @Model.Event.Name
+    @if (Model.Event.Status != EventStatus.Open)
+    {
+        <br /><span style="font-size: .6em; font-weight: normal;">(geschlossen)</span>
+    }
+</h4>
+
+@section Style
+    {
+    <style type="text/css">
+        .eventtable {
+            background-color: #262626;
+        }
+
+            .eventtable td, .eventtable th {
+                border: 4px solid #1b1b1b;
+            }
+    </style>
+}
+
+
+<table class="table eventtable" style="margin-top: 10px; table-layout: fixed">
+    <tbody>
+        @for (int i = 0; i < Model.EventUsers.Count; i++)
+        {
+            <tr onclick="javscript: showUserDetails('@(Model.EventUsers[i].User.UserId.ToString("N"))');">
+                <td style="width: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@(i + 1). @Model.EventUsers[i].User.Username (@Model.EventUsers[i].User.Origin)</td>
+                <td style="width: 70px; white-space: nowrap;" class="text-right">@Model.EventUsers[i].Amount.ToString("F1", CultureInfo.InvariantCulture).Replace(".", ",") l</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- #region Booking Modal -->
+
+<div class="modal fade" id="addEntryModal" tabindex="-1" role="dialog" aria-labelledby="addEntryModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Buchen</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top: 5px;">
+                @if (Model.Drinks.Any())
+                {
+                    foreach (var drink in Model.Drinks)
+                    {
+                        <a class="btn btn-default" style="width: 100%; margin-top: 10px; color: #000;" asp-action="BookDrink" asp-route-id="@Model.Event.EventId#@drink.DrinkId">@drink.Name (@drink.Amount l)</a>
+                    }
+                }
+                else
+                {
+                    <span>Keine Getränke gefunden</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #endregion -->
+<!-- #region LeaveEvent Modal -->
+
+<div class="modal fade" id="leaveEventModal" tabindex="-1" role="dialog" aria-labelledby="leaveEventModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.Event.Name verlassen</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top: 5px;">
+                Bist du dir sicher? Die anderen Teilnehmer werden sehr traurig sein!<br />
+                Solange das Event öffentlich ist, kannst du natürlich jederzeit wieder beitreten.
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-default" style="color: #000;" asp-action="LeaveEvent" asp-route-id="@Model.Event.EventId">Event verlassen</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #endregion -->
+<!-- #region Description Modal -->
+
+<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="descriptionModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.Event.Name</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top: 5px;">
+                @Model.Event.Description
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #endregion -->
+<!-- #region Statistics Modal -->
+
+<div class="modal fade" id="statsModal" tabindex="-1" role="dialog" aria-labelledby="statsModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.Event.Name<br /><small>Statistiken</small></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top: 20px;">
+                <p style="margin-bottom: 0;">@Model.EventUsers.Count teilnehmende Trinker</p>
+                <p style="margin-bottom: 0;">@Model.EventUsers.Sum(x => x.Amount) Liter verbucht</p>
+                <p>@Model.EventUsers.Sum(x => x.AlcoholAmount) Gramm Alkohol konsumiert</p>
+                <table class="table" style="margin-bottom: 0;">
+                    @foreach (var usage in Model.DrinkUsage)
+                    {
+                    <tr>
+                        <td class="text-right" style="width: 60px; padding-right: 0; padding-top: 0; padding-bottom: 5px;">@(usage.Value)x</td>
+                        <td style="padding-top: 0; padding-bottom: 0;">@usage.Key</td>
+                    </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #endregion -->
+
+<div class="modal fade" id="userDetailsModal" tabindex="-1" role="dialog" aria-labelledby="userDetailsModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userDetailsModalName"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top: 5px;">
+                <h6 id="userDetailsModalOrigin"></h6>
+                <div style="margin-top: 25px;"><strong>Event</strong>: @Model.Event.Name</div>
+                <div style="margin-top: 20px;">
+                    <div><strong>Getrunken</strong>: <span id="userDetailsModalLiter"></span> Liter</div>
+                    <div><strong>In reinem Alkohol</strong>: <span id="userDetailsModalAlcohol"></span> Gramm</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+    @foreach (var user in Model.EventUsers)
+    {
+        var userData = new
+        {
+            Name = user.User.Username,
+            Amount = user.Amount.ToString("F2", CultureInfo.InvariantCulture).Replace(".", ","),
+            Alcohol = user.AlcoholAmount.ToString("F2", CultureInfo.InvariantCulture).Replace(".", ","),
+            Origin = user.User.Origin
+        };
+
+        var userDataSerialized = Html.Raw(Json.Serialize(userData));
+
+        @Html.Raw("var userData = [];")
+        @Html.Raw(string.Format("userData{0} = {1};", user.User.UserId.ToString("N"), userDataSerialized))
+    }
+
+        function showUserDetails(id) {
+            if (!id) return;
+            var userData = eval(`userData${id}`);
+
+            $("#userDetailsModalName").text(userData.name);
+            $("#userDetailsModalOrigin").text(userData.origin);
+            $("#userDetailsModalLiter").text(userData.amount);
+            $("#userDetailsModalAlcohol").text(userData.alcohol);
+            $('#userDetailsModal').modal('show');
+        }
+    </script>
+}

@@ -1,0 +1,49 @@
+﻿@using BierAlyzer.Contracts.Model
+@using BierAlyzer.Web.Helper
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BierAlyzer Online - @ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/bieralyzer.min.css" asp-append-version="true" />
+    @RenderSection("Style", required: false)
+    @Html.Partial("_Favicons")
+</head>
+<body>
+
+    <div class="container-fluid" style="text-align: center;">
+        <a asp-route="events">
+            <img src="~/images/Logo.png" alt="ASP.NET" class="img-responsive" style="width: 80%; max-width: 500px; margin: 5px 0 20px 0;" />
+        </a>
+    </div>
+
+    <div class="d-none d-md-block text-center" style="font-size: .6em; margin: 0 250px 10px 250px">Der BierAlyzer Online wurde speziell für mobile Endgeräte entwickelt.</div>
+
+
+    <div class="container body-content">
+        @if (Context.CheckUserType(UserType.Admin))
+        {
+            @Html.Partial("_AdminMenu", Context.GetUser())
+        }
+        @if (Context.IsSignedIn())
+        {
+            @Html.Partial("_Menu");
+        }
+
+        @RenderBody()
+        <hr />
+        <footer>
+            &copy; 2018 - BierAlyzer Online
+            <br />
+            <span style="font-size: .8rem;">
+                <a asp-controller="Public" asp-action="About">About</a> | <a asp-controller="Public" asp-action="Impressum">Impressum</a> | <a asp-controller="Public" asp-action="Privacy">Datenschutzerklärung</a>
+            </span>
+            
+        </footer>
+    </div>
+
+    <script src="~/js/bieralyzer.min.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

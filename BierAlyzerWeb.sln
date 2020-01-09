@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BierAlyzerWeb", "BierAlyzerWeb\BierAlyzerWeb.csproj", "{A3DA0C08-6323-435E-9ECC-249B0E7E76E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BierAlyzer.Web", "BierAlyzer.Web\BierAlyzer.Web.csproj", "{A3DA0C08-6323-435E-9ECC-249B0E7E76E9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "Contracts\Contracts.csproj", "{E743F6C7-C96C-4BD9-B2AD-B61DAFA9369F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BierAlyzer.Contracts", "BierAlyzer.Contracts\BierAlyzer.Contracts.csproj", "{E743F6C7-C96C-4BD9-B2AD-B61DAFA9369F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BierAlyzer.Api", "BierAlyzer.Api\BierAlyzer.Api.csproj", "{52DD3542-3603-4B50-9ACE-35B71B6FEE60}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BierAlyzer.Client", "BierAlyzer.Client\BierAlyzer.Client.csproj", "{F64E666C-68C7-4952-9CF8-0D1069E0554C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BierAlyzer.EntityModel", "BierAlyzer.EntityModel\BierAlyzer.EntityModel.csproj", "{09F4FDB7-3239-456A-8B16-380075E5DA59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +27,18 @@ Global
 		{E743F6C7-C96C-4BD9-B2AD-B61DAFA9369F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E743F6C7-C96C-4BD9-B2AD-B61DAFA9369F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E743F6C7-C96C-4BD9-B2AD-B61DAFA9369F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52DD3542-3603-4B50-9ACE-35B71B6FEE60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52DD3542-3603-4B50-9ACE-35B71B6FEE60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52DD3542-3603-4B50-9ACE-35B71B6FEE60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52DD3542-3603-4B50-9ACE-35B71B6FEE60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F64E666C-68C7-4952-9CF8-0D1069E0554C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F64E666C-68C7-4952-9CF8-0D1069E0554C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F64E666C-68C7-4952-9CF8-0D1069E0554C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F64E666C-68C7-4952-9CF8-0D1069E0554C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09F4FDB7-3239-456A-8B16-380075E5DA59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09F4FDB7-3239-456A-8B16-380075E5DA59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09F4FDB7-3239-456A-8B16-380075E5DA59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09F4FDB7-3239-456A-8B16-380075E5DA59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
